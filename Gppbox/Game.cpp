@@ -76,11 +76,11 @@ void Game::pollInput(double dt) {
 	float lateralSpeed = 8.0;
 	float maxSpeed = 40.0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-
+		gameManager.hero->XMovement -= gameManager.xSpeed;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-
+		gameManager.hero->XMovement += gameManager.xSpeed;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
@@ -122,6 +122,8 @@ void Game::update(double dt) {
 
 	beforeParts.update(dt);
 	afterParts.update(dt);
+
+	gameManager.Update();
 }
 
  void Game::draw(sf::RenderWindow & win) {
@@ -146,10 +148,12 @@ void Game::update(double dt) {
 	
 
 	afterParts.draw(win);
+
+	gameManager.Draw();
 }
 
 void Game::onSpacePressed() {
-	
+	gameManager.hero->YMovement -= gameManager.jumpForce;
 }
 
 

@@ -11,6 +11,8 @@
 #include "Particle.hpp"
 #include "ParticleMan.hpp"
 
+#include "GameManager.hpp"
+
 using namespace sf;
 
 class HotReloadShader;
@@ -30,6 +32,8 @@ public:
 
 	ParticleMan beforeParts;
 	ParticleMan afterParts;
+
+	GameManager gameManager = GameManager(this);
 
 	Game(sf::RenderWindow * win);
 
