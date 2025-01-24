@@ -8,9 +8,7 @@ private:
 	Game* game;
 
 public:
-	const float xSpeed = 0.01;
-	const float gravity = 0.05;
-	const float jumpForce = 0.8;
+	const float gravity = 0.003;
 	Entity* hero;
 	std::vector<Entity*> entities;
 	GameManager(Game* game);

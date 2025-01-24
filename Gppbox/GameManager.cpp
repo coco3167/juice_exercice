@@ -4,7 +4,7 @@
 GameManager::GameManager(Game* game)
 {
 	this->game = game;
-	hero = new Entity(15, 50, "res/Perso.png", this);
+	hero = new Entity(100, 100, "res/Perso.png", this);
 	entities.push_back(hero);
 }
 

@@ -28,13 +28,11 @@ Game::Game(sf::RenderWindow * win) {
 	for (int i = 0; i < 1280 / C::GRID_SIZE; ++i) 
 		walls.push_back( Vector2i(i, lastLine) );
 
-	walls.push_back(Vector2i(0, lastLine-1));
-	walls.push_back(Vector2i(0, lastLine-2));
-	walls.push_back(Vector2i(0, lastLine-3));
-
-	walls.push_back(Vector2i(cols-1, lastLine - 1));
-	walls.push_back(Vector2i(cols-1, lastLine - 2));
-	walls.push_back(Vector2i(cols-1, lastLine - 3));
+	for (int loop = 1; loop <= lastLine; loop++)
+	{
+		walls.push_back(Vector2i(0, lastLine - loop));
+		walls.push_back(Vector2i(cols - 1, lastLine - loop));
+	}
 
 	walls.push_back(Vector2i(cols >>2, lastLine - 2));
 	walls.push_back(Vector2i(cols >>2, lastLine - 3));
@@ -76,11 +74,11 @@ void Game::pollInput(double dt) {
 	float lateralSpeed = 8.0;
 	float maxSpeed = 40.0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-		gameManager.hero->XMovement -= gameManager.xSpeed;
+		gameManager.hero->MoveOnX(false);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-		gameManager.hero->XMovement += gameManager.xSpeed;
+		gameManager.hero->MoveOnX(true);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
@@ -153,7 +151,7 @@ void Game::update(double dt) {
 }
 
 void Game::onSpacePressed() {
-	gameManager.hero->YMovement -= gameManager.jumpForce;
+	gameManager.hero->Jump();
 }
 
 

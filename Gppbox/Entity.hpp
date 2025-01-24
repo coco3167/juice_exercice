@@ -24,6 +24,9 @@ public :
 	float XMovement;
 	float YMovement;
 
+	bool OnGround;
+	float XSpeed = 0.003f, XAirSpeed = 0.002f, MaxSpeed = 2.f, JumpForce = 0.5f, GroundFriction = 0.96f, AirFriction = 0.98f;
+
 
 	Entity(int x, int y, std::string texturePath, GameManager* gameManager);
 
@@ -31,5 +34,7 @@ public :
 
 	bool HasCollision(int xGrid, int yGrid);
 	void SetCoord(float x, float y);
+	void MoveOnX(bool rightMovement);
+	void Jump();
 };
 

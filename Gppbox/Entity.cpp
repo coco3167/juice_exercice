@@ -16,13 +16,14 @@ Entity::Entity(int x, int y, std::string texturePath, GameManager* gameManager)
 
 void Entity::Update()
 {
-	XMovement = fmin(XMovement, 2);
-	XMovement = fmax(XMovement, -2);
+	XMovement = std::clamp(XMovement, -MaxSpeed, MaxSpeed);
+	YMovement += gameManager->gravity;
 
 	XRatio += XMovement;
-	YRatio += YMovement + gameManager->gravity;
-	XMovement *= 0.96;
-	YMovement *= 0.96;
+	YRatio += YMovement;
+
+	XMovement *= OnGround ? GroundFriction : AirFriction;
+	YMovement *= GroundFriction;
 
 	while (XRatio > 1)
 	{
@@ -52,6 +53,7 @@ void Entity::Update()
 		{
 			YRatio = 0.7;
 			YMovement = 0;
+			OnGround = true;
 			break;
 		}
 		YRatio--;
@@ -61,8 +63,8 @@ void Entity::Update()
 	{
 		if (HasCollision(XGrid, YGrid - 1) && YRatio <= 0.3)
 		{
-			YRatio = 0.3;
-			YMovement = 0;
+			YRatio = 0.3f;
+			YMovement = 0.f;
 			break;
 		}
 		YRatio++;
@@ -83,6 +85,7 @@ void Entity::Update()
 	{
 		YRatio = 0.7;
 		YMovement = 0;
+		OnGround = true;
 	}
 	if (HasCollision(XGrid, YGrid - 1) && YRatio <= 0.3)
 	{
@@ -90,9 +93,6 @@ void Entity::Update()
 		YMovement = 0;
 	}
 	
-
-	std::cout << XReal << std::endl;
-	std::cout << YReal << std::endl;
 
 	// End Update
 	XReal = int((XGrid + XRatio) * C::GRID_SIZE);
@@ -113,4 +113,18 @@ void Entity::SetCoord(float x, float y)
 	YGrid = int(y / C::GRID_SIZE);
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
+}
+
+void Entity::MoveOnX(bool rightMovement)
+{
+	XMovement += (rightMovement ? 1 : -1) * (OnGround ? XSpeed : XAirSpeed);
+}
+
+void Entity::Jump()
+{
+	if (!OnGround)
+		return;
+
+	YMovement -= JumpForce;
+	OnGround = false;
 }
