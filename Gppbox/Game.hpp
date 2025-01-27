@@ -28,7 +28,8 @@ public:
 	bool							closing = false;
 	
 	std::vector<sf::Vector2i>		walls;
-	std::vector<sf::RectangleShape> wallSprites;
+	std::vector<sf::Sprite> wallSprites;
+	sf::Texture	wallTexture;
 
 	ParticleMan beforeParts;
 	ParticleMan afterParts;

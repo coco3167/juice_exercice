@@ -24,6 +24,8 @@ Game::Game(sf::RenderWindow * win) {
 	bg.setSize(sf::Vector2f(1280, 720));
 
 	bgShader = new HotReloadShader("res/bg.vert", "res/bg.frag");
+
+	wallTexture.loadFromFile("res/wall.png");
 	
 	for (int i = 0; i < 1280 / C::GRID_SIZE; ++i) 
 		walls.push_back( Vector2i(i, lastLine) );
@@ -50,10 +52,14 @@ void Game::cacheWalls()
 {
 	wallSprites.clear();
 	for (Vector2i & w : walls) {
-		sf::RectangleShape rect(Vector2f(16,16));
+		/*sf::RectangleShape rect(Vector2f(16,16));
 		rect.setPosition((float)w.x * C::GRID_SIZE, (float)w.y * C::GRID_SIZE);
-		rect.setFillColor(sf::Color(0x07ff07ff));
-		wallSprites.push_back(rect);
+		rect.setFillColor(sf::Color(0x07ff07ff));*/
+		Sprite wallSprite = Sprite(wallTexture);
+		wallSprite.setPosition((float)w.x * C::GRID_SIZE, (float)w.y * C::GRID_SIZE);
+		wallSprite.setScale(2,2);
+		
+		wallSprites.push_back(wallSprite);
 	}
 }
 
@@ -143,7 +149,7 @@ void Game::update(double dt) {
 
 	beforeParts.draw(win);
 
-	for (sf::RectangleShape & r : wallSprites)
+	for (sf::Sprite r : wallSprites)
 		win.draw(r);
 
 	for (sf::RectangleShape& r : rects) 
