@@ -133,7 +133,7 @@ int main()
 			ImGui::Value("size x", sz.x);
 			ImGui::Value("size y", sz.y);
 		}
-		if (ImGui::CollapsingHeader("App Stats", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (ImGui::CollapsingHeader("App Stats")) {
 			//double df = (Lib::getTimeStamp() - frameStart);
 
 			double mdt = std::accumulate(dts.begin(),dts.end(),0.0) / dts.size();
@@ -155,6 +155,17 @@ int main()
 			ImGui::SliderFloat("bloomWidth", &bloomWidth, 0, 55);//55 is max acceptable kernel size for constants, otherwise we should use a texture
 			ImGui::ColorEdit4("bloomMul", &bloomMul.x);
 		}
+
+    	if (ImGui::CollapsingHeader("Movement Control", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
+    	{
+    		ImGui::DragFloat("Gravity", &GameManager::Gravity, 0, 0.01f);
+    		ImGui::DragFloat("X Speed", &Entity::XSpeed, 0, .01f);
+    		ImGui::DragFloat("X Air Speed", &Entity::XAirSpeed, 0, .01f);
+    		ImGui::DragFloat("Max Speed", &Entity::MaxSpeed, .5f, 5);
+    		ImGui::DragFloat("Jump Force", &Entity::JumpForce, 0, 5);
+    		ImGui::DragFloat("Ground Friction", &Entity::GroundFriction, 0, 1);
+    		ImGui::DragFloat("Air Friction", &Entity::AirFriction, 0, 1);
+    	}
 		g.im();
 
         g.draw(window);

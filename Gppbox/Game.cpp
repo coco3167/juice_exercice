@@ -38,6 +38,11 @@ Game::Game(sf::RenderWindow * win) {
 	walls.push_back(Vector2i(cols >>2, lastLine - 3));
 	walls.push_back(Vector2i(cols >>2, lastLine - 4));
 	walls.push_back(Vector2i((cols >> 2) + 1, lastLine - 4));
+	walls.push_back(Vector2i((cols >> 2) + 2, lastLine - 4));
+	walls.push_back(Vector2i((cols >> 2) + 3, lastLine - 4));
+	walls.push_back(Vector2i((cols >> 2) - 1, lastLine - 4));
+	walls.push_back(Vector2i((cols >> 2) - 2, lastLine - 4));
+	walls.push_back(Vector2i((cols >> 2) - 3, lastLine - 4));
 	cacheWalls();
 }
 
@@ -82,7 +87,7 @@ void Game::pollInput(double dt) {
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-
+		gameManager.hero->Jump();
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T)) {
@@ -151,7 +156,7 @@ void Game::update(double dt) {
 }
 
 void Game::onSpacePressed() {
-	gameManager.hero->Jump();
+	
 }
 
 

@@ -8,7 +8,11 @@ private:
 	GameManager* gameManager;
 
 public :
+	static float XSpeed, XAirSpeed, MaxSpeed, JumpForce, GroundFriction, AirFriction;
+	
 	sf::Sprite Sprite;
+	sf::Texture texture;
+	bool isLookingLeft;
 
 	// Base coordinates
 	int XGrid;
@@ -25,10 +29,9 @@ public :
 	float YMovement;
 
 	bool OnGround;
-	float XSpeed = 0.003f, XAirSpeed = 0.002f, MaxSpeed = 2.f, JumpForce = 0.5f, GroundFriction = 0.96f, AirFriction = 0.98f;
 
 
-	Entity(int x, int y, std::string texturePath, GameManager* gameManager);
+	Entity(int x, int y, const std::string& texturePath, GameManager* gameManager);
 
 	void Update();
 

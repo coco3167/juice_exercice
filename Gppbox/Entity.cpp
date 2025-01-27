@@ -4,11 +4,14 @@
 #include "GameManager.hpp"
 #include <iostream>
 
-Entity::Entity(int x, int y, std::string texturePath, GameManager* gameManager)
+float Entity::XSpeed = 0.003f, Entity::XAirSpeed = 0.002f, Entity::MaxSpeed = 2.f, Entity::JumpForce = 0.5f, Entity::GroundFriction = 0.96f, Entity::AirFriction = 0.98f;
+
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager* gameManager)
 {
-	sf::Texture text;
-	text.loadFromFile(texturePath);
-	Sprite.setTexture(text);
+	texture.loadFromFile(texturePath);
+	Sprite.setTexture(texture);
+	Sprite.setScale(2,2);
+	Sprite.setOrigin(Sprite.getTexture()->getSize().x / 2, Sprite.getTexture()->getSize().y / 2);
 	SetCoord(x, y);
 
 	this->gameManager = gameManager;
@@ -17,19 +20,35 @@ Entity::Entity(int x, int y, std::string texturePath, GameManager* gameManager)
 void Entity::Update()
 {
 	XMovement = std::clamp(XMovement, -MaxSpeed, MaxSpeed);
-	YMovement += gameManager->gravity;
+	YMovement += GameManager::Gravity;
 
 	XRatio += XMovement;
 	YRatio += YMovement;
+
+	sf::IntRect textureRect = sf::IntRect(Sprite.getTextureRect());
+	if (XMovement < 0 && !isLookingLeft)
+	{
+		textureRect.left = textureRect.width;
+		textureRect.width = -textureRect.width;
+		Sprite.setTextureRect(textureRect);
+		isLookingLeft = true;
+	}
+	else if (XMovement > 0 && isLookingLeft)
+	{
+		textureRect.left = 0;
+		textureRect.width = -textureRect.width;
+		Sprite.setTextureRect(textureRect);
+		isLookingLeft = false;
+	}
 
 	XMovement *= OnGround ? GroundFriction : AirFriction;
 	YMovement *= GroundFriction;
 
 	while (XRatio > 1)
 	{
-		if (HasCollision(XGrid + 1, YGrid) && XRatio >= 0.7)
+		if (HasCollision(XGrid + 2, YGrid) || HasCollision(XGrid + 2, YGrid + 1))
 		{
-			XRatio = 0.7;
+			XRatio = 1;
 			XMovement = 0;
 			break;
 		}
@@ -38,9 +57,9 @@ void Entity::Update()
 	}
 	while (XRatio < 0)
 	{
-		if (HasCollision(XGrid - 1, YGrid) && XRatio <= 0.3)
+		if (HasCollision(XGrid - 2, YGrid) || HasCollision(XGrid - 2, YGrid + 1))
 		{
-			XRatio = 0.3;
+			XRatio = 0;
 			XMovement = 0;
 			break;
 		}
@@ -49,9 +68,9 @@ void Entity::Update()
 	}
 	while (YRatio > 1)
 	{
-		if (HasCollision(XGrid, YGrid + 1) && YRatio >= 0.7)
+		if (HasCollision(XGrid, YGrid + 2) || HasCollision(XGrid - 1, YGrid + 2))
 		{
-			YRatio = 0.7;
+			YRatio = 1;
 			YMovement = 0;
 			OnGround = true;
 			break;
@@ -61,38 +80,15 @@ void Entity::Update()
 	}
 	while (YRatio < 0)
 	{
-		if (HasCollision(XGrid, YGrid - 1) && YRatio <= 0.3)
+		if (HasCollision(XGrid, YGrid - 2) || HasCollision(XGrid - 1, YGrid - 2))
 		{
-			YRatio = 0.3f;
+			YRatio = 0;
 			YMovement = 0.f;
 			break;
 		}
 		YRatio++;
 		YGrid--;
 	}
-
-	if (HasCollision(XGrid + 1, YGrid) && XRatio >= 0.7)
-	{
-		XRatio = 0.7;
-		XMovement = 0;
-	}
-	if (HasCollision(XGrid - 1, YGrid) && XRatio <= 0.3)
-	{
-		XRatio = 0.3;
-		XMovement = 0;
-	}
-	if (HasCollision(XGrid, YGrid + 1) && YRatio >= 0.7)
-	{
-		YRatio = 0.7;
-		YMovement = 0;
-		OnGround = true;
-	}
-	if (HasCollision(XGrid, YGrid - 1) && YRatio <= 0.3)
-	{
-		YRatio = 0.3;
-		YMovement = 0;
-	}
-	
 
 	// End Update
 	XReal = int((XGrid + XRatio) * C::GRID_SIZE);

@@ -2,13 +2,17 @@
 #include "Entity.hpp"
 class Game;
 
+
+
 class GameManager
 {
 private:
 	Game* game;
 
 public:
-	const float gravity = 0.003;
+	static float Gravity;
+	
+	sf::View camera;
 	Entity* hero;
 	std::vector<Entity*> entities;
 	GameManager(Game* game);

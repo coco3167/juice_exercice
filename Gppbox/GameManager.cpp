@@ -1,6 +1,8 @@
 #include "GameManager.hpp"
 #include "Game.hpp"
 
+float GameManager::Gravity = 0.003f;
+
 GameManager::GameManager(Game* game)
 {
 	this->game = game;
