@@ -16,10 +16,10 @@ Game::Game(sf::RenderWindow * win) {
 	this->win = win;
 	bg = sf::RectangleShape(Vector2f((float)win->getSize().x, (float)win->getSize().y));
 
-	bool isOk = tex.loadFromFile("res/bg_stars.png");
+	/*bool isOk = tex.loadFromFile("res/bg.jpg");
 	if (!isOk) {
 		printf("ERR : LOAD FAILED\n");
-	}
+	}*/
 	bg.setTexture(&tex);
 	bg.setSize(sf::Vector2f(1280, 720));
 
