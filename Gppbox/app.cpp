@@ -158,13 +158,18 @@ int main()
 
     	if (ImGui::CollapsingHeader("Movement Control", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
     	{
-    		ImGui::DragFloat("Gravity", &GameManager::Gravity, 0, 0.01f);
-    		ImGui::DragFloat("X Speed", &Entity::XSpeed, 0, .01f);
-    		ImGui::DragFloat("X Air Speed", &Entity::XAirSpeed, 0, .01f);
-    		ImGui::DragFloat("Max Speed", &Entity::MaxSpeed, .5f, 5);
-    		ImGui::DragFloat("Jump Force", &Entity::JumpForce, 0, 5);
+    		ImGui::DragInt("Gravity", &GameManager::Gravity, 0, 0.01f);
+    		ImGui::DragInt("X Speed", &Entity::XSpeed, 0, .01f);
+    		ImGui::DragInt("X Air Speed", &Entity::XAirSpeed, 0, .01f);
+    		ImGui::DragInt("Max Speed", &Entity::MaxSpeed, .5f, 5);
+    		ImGui::DragInt("Jump Force", &Entity::JumpForce, 0, 5);
     		ImGui::DragFloat("Ground Friction", &Entity::GroundFriction, 0, 1);
     		ImGui::DragFloat("Air Friction", &Entity::AirFriction, 0, 1);
+    	}
+
+    	if (ImGui::CollapsingHeader("Level Editor"))
+    	{
+    		ImGui::Checkbox("Edit Mode", &GameManager::EditMode);
     	}
 		g.im();
 

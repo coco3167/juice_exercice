@@ -4,7 +4,8 @@
 #include "GameManager.hpp"
 #include <iostream>
 
-float Entity::XSpeed = 0.003f, Entity::XAirSpeed = 0.002f, Entity::MaxSpeed = 2.f, Entity::JumpForce = 0.5f, Entity::GroundFriction = 0.96f, Entity::AirFriction = 0.98f;
+int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
+float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
 Entity::Entity(int x, int y, const std::string &texturePath, GameManager* gameManager)
 {
@@ -17,13 +18,13 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager* gameMa
 	this->gameManager = gameManager;
 }
 
-void Entity::Update()
+void Entity::Update(float deltaTime)
 {
-	XMovement = std::clamp(XMovement, -MaxSpeed, MaxSpeed);
-	YMovement += GameManager::Gravity;
+	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
+	YMovement += GameManager::Gravity*deltaTime;
 
-	XRatio += XMovement;
-	YRatio += YMovement;
+	XRatio += XMovement*deltaTime;
+	YRatio += YMovement*deltaTime;
 
 	sf::IntRect textureRect = sf::IntRect(Sprite.getTextureRect());
 	if (XMovement < 0 && !isLookingLeft)
@@ -41,8 +42,7 @@ void Entity::Update()
 		isLookingLeft = false;
 	}
 
-	XMovement *= OnGround ? GroundFriction : AirFriction;
-	YMovement *= GroundFriction;
+	XMovement *= OnGround ? std::pow(GroundFriction, 10*deltaTime) : std::pow(AirFriction, 10*deltaTime);
 
 	while (XRatio > 1)
 	{
@@ -91,8 +91,8 @@ void Entity::Update()
 	}
 
 	// End Update
-	XReal = int((XGrid + XRatio) * C::GRID_SIZE);
-	YReal = int((YGrid + YRatio) * C::GRID_SIZE);
+	XReal = (XGrid + XRatio) * C::GRID_SIZE;
+	YReal = (YGrid + YRatio) * C::GRID_SIZE;
 	Sprite.setPosition(XReal, YReal);
 }
 

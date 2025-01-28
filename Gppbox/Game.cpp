@@ -132,7 +132,7 @@ void Game::update(double dt) {
 	beforeParts.update(dt);
 	afterParts.update(dt);
 
-	gameManager.Update();
+	gameManager.Update(dt);
 }
 
  void Game::draw(sf::RenderWindow & win) {
@@ -160,6 +160,17 @@ void Game::update(double dt) {
 
 	gameManager.Draw();
 }
+
+void Game::AddWall(Vector2i wallPos)
+{
+	walls.push_back(wallPos);
+}
+
+void Game::RemoveWall(Vector2i wallPos)
+{
+	walls.erase(std::remove(walls.begin(), walls.end(), wallPos), walls.end());
+}
+
 
 void Game::onSpacePressed() {
 	

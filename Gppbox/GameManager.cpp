@@ -1,7 +1,8 @@
 #include "GameManager.hpp"
 #include "Game.hpp"
 
-float GameManager::Gravity = 0.003f;
+int GameManager::Gravity = 700;
+bool GameManager::EditMode = false;
 
 GameManager::GameManager(Game* game)
 {
@@ -10,17 +11,17 @@ GameManager::GameManager(Game* game)
 	entities.push_back(hero);
 }
 
-void GameManager::Update()
+void GameManager::Update(float deltaTime)
 {
-	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); iterator++)
+	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
-		(*iterator)->Update();
+		(*iterator)->Update(deltaTime);
 	}
 }
 
 void GameManager::Draw()
 {
-	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); iterator++)
+	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
 		game->win->draw((*iterator)->Sprite);
 	}

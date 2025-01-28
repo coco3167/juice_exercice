@@ -8,7 +8,8 @@ private:
 	GameManager* gameManager;
 
 public :
-	static float XSpeed, XAirSpeed, MaxSpeed, JumpForce, GroundFriction, AirFriction;
+	static int XSpeed, XAirSpeed, MaxSpeed, JumpForce;
+	static float GroundFriction, AirFriction;
 	
 	sf::Sprite Sprite;
 	sf::Texture texture;
@@ -33,7 +34,7 @@ public :
 
 	Entity(int x, int y, const std::string& texturePath, GameManager* gameManager);
 
-	void Update();
+	void Update(float deltaTime);
 
 	bool HasCollision(int xGrid, int yGrid);
 	void SetCoord(float x, float y);
