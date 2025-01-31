@@ -15,6 +15,7 @@
 #include "Dice.hpp"
 #include "Lib.hpp"
 #include "Game.hpp"
+#include "GameManager.hpp"
 #include "Interp.hpp"
 #include "HotReloadShader.hpp"
 #include "app.h"
@@ -28,9 +29,6 @@ extern "C" {
 	// AMD equivalent to the above
 	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
-
-using namespace std;
-using namespace sf;
 
 static HotReloadShader * bloomShader = nullptr;
 static HotReloadShader * blurShader = nullptr;
@@ -62,6 +60,7 @@ int main()
 	ImGui::SFML::Init(window);
 
     Game g(&window);
+	GameManager& gameManager = *g.gameManager;
 
 	Vector2i winPos;
 
@@ -156,20 +155,27 @@ int main()
 			ImGui::ColorEdit4("bloomMul", &bloomMul.x);
 		}
 
-    	if (ImGui::CollapsingHeader("Movement Control", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
+    	if (ImGui::CollapsingHeader("Movement Control"))
     	{
-    		ImGui::DragInt("Gravity", &GameManager::Gravity, 0, 0.01f);
-    		ImGui::DragInt("X Speed", &Entity::XSpeed, 0, .01f);
-    		ImGui::DragInt("X Air Speed", &Entity::XAirSpeed, 0, .01f);
+    		ImGui::DragInt("Gravity", &gameManager.Gravity, 0);
+    		ImGui::DragInt("X Speed", &Entity::XSpeed, 0);
+    		ImGui::DragInt("X Air Speed", &Entity::XAirSpeed, 0);
     		ImGui::DragInt("Max Speed", &Entity::MaxSpeed, .5f, 5);
     		ImGui::DragInt("Jump Force", &Entity::JumpForce, 0, 5);
     		ImGui::DragFloat("Ground Friction", &Entity::GroundFriction, 0, 1);
     		ImGui::DragFloat("Air Friction", &Entity::AirFriction, 0, 1);
     	}
 
-    	if (ImGui::CollapsingHeader("Level Editor"))
+    	if (ImGui::CollapsingHeader("Level Editor", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
     	{
-    		ImGui::Checkbox("Edit Mode", &GameManager::EditMode);
+    		ImGui::Checkbox("Edit Mode", &gameManager.EditMode);
+    		if (gameManager.EditMode)
+    		{
+    			if (ImGui::Button("Save Level"))
+    				gameManager.SaveLevel();
+    			if (ImGui::Button("Load Level"))
+    				gameManager.LoadLevel();
+    		}
     	}
 		g.im();
 
@@ -199,7 +205,6 @@ int main()
 		}
 		dts[curDts] = dt;
     }
-
 	ImGui::SFML::Shutdown();
 
     return 0;

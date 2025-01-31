@@ -6,13 +6,15 @@
 #include "C.hpp"
 #include "Game.hpp"
 
+#include <iostream>
+
 #include "HotReloadShader.hpp"
 
 
-static int cols = 1280 / C::GRID_SIZE;
-static int lastLine = 720 / C::GRID_SIZE - 1;
+int Game::Cols = 1280 / C::GRID_SIZE;
+int Game::LastLine = 720 / C::GRID_SIZE - 1;
 
-Game::Game(sf::RenderWindow * win) {
+Game::Game(sf::RenderWindow * win) : gameManager(new GameManager(*this)) {
 	this->win = win;
 	bg = sf::RectangleShape(Vector2f((float)win->getSize().x, (float)win->getSize().y));
 
@@ -26,26 +28,32 @@ Game::Game(sf::RenderWindow * win) {
 	bgShader = new HotReloadShader("res/bg.vert", "res/bg.frag");
 
 	wallTexture.loadFromFile("res/wall.png");
-	
+	/*
 	for (int i = 0; i < 1280 / C::GRID_SIZE; ++i) 
-		walls.push_back( Vector2i(i, lastLine) );
+		walls.push_back( Vector2i(i, LastLine) );
 
-	for (int loop = 1; loop <= lastLine; loop++)
+	for (int loop = 1; loop <= LastLine; loop++)
 	{
-		walls.push_back(Vector2i(0, lastLine - loop));
-		walls.push_back(Vector2i(cols - 1, lastLine - loop));
+		walls.push_back(Vector2i(0, LastLine - loop));
+		walls.push_back(Vector2i(Cols - 1, LastLine - loop));
 	}
 
-	walls.push_back(Vector2i(cols >>2, lastLine - 2));
-	walls.push_back(Vector2i(cols >>2, lastLine - 3));
-	walls.push_back(Vector2i(cols >>2, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) + 1, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) + 2, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) + 3, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) - 1, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) - 2, lastLine - 4));
-	walls.push_back(Vector2i((cols >> 2) - 3, lastLine - 4));
+	walls.push_back(Vector2i(Cols >>2, LastLine - 2));
+	walls.push_back(Vector2i(Cols >>2, LastLine - 3));
+	walls.push_back(Vector2i(Cols >>2, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) + 1, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) + 2, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) + 3, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) - 1, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) - 2, LastLine - 4));
+	walls.push_back(Vector2i((Cols >> 2) - 3, LastLine - 4));
 	cacheWalls();
+	*/
+}
+
+Game::~Game()
+{
+	delete gameManager;
 }
 
 void Game::cacheWalls()
@@ -85,15 +93,15 @@ void Game::pollInput(double dt) {
 	float lateralSpeed = 8.0;
 	float maxSpeed = 40.0;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-		gameManager.hero->MoveOnX(false);
+		gameManager->hero->MoveOnX(false);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-		gameManager.hero->MoveOnX(true);
+		gameManager->hero->MoveOnX(true);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-		gameManager.hero->Jump();
+		gameManager->hero->Jump();
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T)) {
@@ -132,7 +140,7 @@ void Game::update(double dt) {
 	beforeParts.update(dt);
 	afterParts.update(dt);
 
-	gameManager.Update(dt);
+	gameManager->Update(dt);
 }
 
  void Game::draw(sf::RenderWindow & win) {
@@ -158,7 +166,7 @@ void Game::update(double dt) {
 
 	afterParts.draw(win);
 
-	gameManager.Draw();
+	gameManager->Draw();
 }
 
 void Game::AddWall(Vector2i wallPos)
@@ -190,4 +198,3 @@ void Game::im()
 {
 
 }
-

@@ -7,21 +7,19 @@
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
-Entity::Entity(int x, int y, const std::string &texturePath, GameManager* gameManager)
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager) : gameManager(gameManager)
 {
 	texture.loadFromFile(texturePath);
 	Sprite.setTexture(texture);
 	Sprite.setScale(2,2);
 	Sprite.setOrigin(Sprite.getTexture()->getSize().x / 2, Sprite.getTexture()->getSize().y / 2);
 	SetCoord(x, y);
-
-	this->gameManager = gameManager;
 }
 
 void Entity::Update(float deltaTime)
 {
 	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
-	YMovement += GameManager::Gravity*deltaTime;
+	YMovement += gameManager.Gravity*deltaTime;
 
 	XRatio += XMovement*deltaTime;
 	YRatio += YMovement*deltaTime;
@@ -98,7 +96,7 @@ void Entity::Update(float deltaTime)
 
 bool Entity::HasCollision(int xGrid, int yGrid)
 {
-	return gameManager->HasCollision(xGrid, yGrid);
+	return gameManager.HasCollision(xGrid, yGrid);
 }
 
 void Entity::SetCoord(float x, float y)

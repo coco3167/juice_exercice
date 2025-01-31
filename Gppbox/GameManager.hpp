@@ -1,5 +1,8 @@
 #pragma once
+#include <fstream>
+
 #include "Entity.hpp"
+#include "Game.hpp"
 class Game;
 
 
@@ -7,19 +10,26 @@ class Game;
 class GameManager
 {
 private:
-	Game* game;
-
+	Game& game;
+	//int levelArray[Game::Cols][Game::LastLine];
+	
 public:
-	static int Gravity;
-	static bool EditMode;
+	int Gravity = 700;
+	bool EditMode = false;
+	std::fstream inputFile;
 	
 	sf::View camera;
 	Entity* hero;
 	std::vector<Entity*> entities;
 	
-	GameManager(Game* game);
+	GameManager(Game& game);
+	~GameManager();
 	void Update(float deltaTime);
 	void Draw();
 	bool HasCollision(int x, int y);
+
+	void CreateLevel();
+	void SaveLevel();
+	void LoadLevel();
 };
 

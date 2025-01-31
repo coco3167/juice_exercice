@@ -5,7 +5,7 @@ class GameManager;
 class Entity
 {
 private:
-	GameManager* gameManager;
+	GameManager& gameManager;
 
 public :
 	static int XSpeed, XAirSpeed, MaxSpeed, JumpForce;
@@ -32,7 +32,7 @@ public :
 	bool OnGround;
 
 
-	Entity(int x, int y, const std::string& texturePath, GameManager* gameManager);
+	Entity(int x, int y, const std::string& texturePath, GameManager& gameManager);
 
 	void Update(float deltaTime);
 

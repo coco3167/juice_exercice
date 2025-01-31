@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "GameManager.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
@@ -11,13 +12,13 @@
 #include "Particle.hpp"
 #include "ParticleMan.hpp"
 
-#include "GameManager.hpp"
 
-using namespace sf;
-
+class GameManager;
 class HotReloadShader;
 class Game {
 public:
+	static int Cols, LastLine;
+	
 	sf::RenderWindow*				win = nullptr;
 
 	sf::RectangleShape				bg;
@@ -34,9 +35,10 @@ public:
 	ParticleMan beforeParts;
 	ParticleMan afterParts;
 
-	GameManager gameManager = GameManager(this);
+	GameManager* gameManager;
 
 	Game(sf::RenderWindow * win);
+	~Game();
 
 	void cacheWalls();
 
