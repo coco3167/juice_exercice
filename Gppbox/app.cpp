@@ -23,6 +23,9 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
+#include "C.hpp"
+
 extern "C" {
 	// Force the use of the NVidia-graphics card on notebooks with both an IGP and a GPU
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
@@ -168,13 +171,23 @@ int main()
 
     	if (ImGui::CollapsingHeader("Level Editor", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
     	{
+			// The fcking left mouse button apply when disabling the edit mode, it shouldn't
+    		// Try to detect when disabling
+    		// Or try to get IMGUI window pos and size and disable painting level when inside ?
+    		
+    		bool oldEditMode = gameManager.EditMode;
     		ImGui::Checkbox("Edit Mode", &gameManager.EditMode);
     		if (gameManager.EditMode)
     		{
+    			ImGui::Text("Left Click to Add");
+    			ImGui::Text("Right Click to Remove");
+    			
     			if (ImGui::Button("Save Level"))
     				gameManager.SaveLevel();
-    			if (ImGui::Button("Load Level"))
+    			else if (ImGui::Button("Load Level"))
     				gameManager.LoadLevel();
+			    else if (oldEditMode)
+				    HandleLevelPainting(window, g);
     		}
     	}
 		g.im();
@@ -208,6 +221,41 @@ int main()
 	ImGui::SFML::Shutdown();
 
     return 0;
+}
+
+void HandleLevelPainting(const Window& window, Game& g)
+{
+	Vector2i mousePosition = Mouse::getPosition(window);
+	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)
+	{
+		if (Mouse::isButtonPressed(Mouse::Left))
+		{
+			if (!isLeftMousePressed)
+			{
+				g.AddWall(mousePosition/C::GRID_SIZE);
+				g.cacheWalls();
+				isLeftMousePressed = true;
+			}
+		}
+		else
+		{
+			isLeftMousePressed = false;
+		}
+
+		if (Mouse::isButtonPressed(Mouse::Right))
+		{
+			if (!isRightMousePressed)
+			{
+				g.RemoveWall(mousePosition/C::GRID_SIZE);
+				g.cacheWalls();
+				isRightMousePressed = true;
+			}
+		}
+		else
+		{
+			isRightMousePressed = false;
+		}
+	}
 }
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage

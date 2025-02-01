@@ -47,9 +47,9 @@ void GameManager::CreateLevel()
 	if (inputFile.fail())
 	{
 		inputFile.open("Level.txt", std::fstream::out);
-		for (int columns = 0; columns < Game::Cols; columns++)
+		for (int rows = 0; rows < Game::LastLine + 1; rows++)
 		{
-			for (int rows = 0; rows < Game::LastLine; rows++)
+			for (int columns = 0; columns < Game::Cols; columns++)
 			{
 				inputFile << "0";
 			}
@@ -61,6 +61,7 @@ void GameManager::CreateLevel()
 	}
 	else
 	{
+		inputFile.close();
 		LoadLevel();
 	}
 }
@@ -68,20 +69,36 @@ void GameManager::CreateLevel()
 
 void GameManager::SaveLevel()
 {
-	std::cout << "Saving level" << std::endl;
+	inputFile.open("Level.txt", std::fstream::out);
+	for (int rows = 0; rows < Game::LastLine + 1; rows++)
+	{
+		for (int columns = 0; columns < Game::Cols; columns++)
+		{
+			if (game.isWall(columns, rows))
+				inputFile << "X";
+			else
+				inputFile << "0";
+		}
+		inputFile << "\n";
+	}
+	inputFile.close();
 }
 
 void GameManager::LoadLevel()
 {
-	for (int columns = 0; columns < Game::Cols; columns++)
+	game.walls.clear();
+	inputFile.open("Level.txt", std::fstream::in);
+	std::string line;
+	int row = 0;
+	while (inputFile >> line)
 	{
-		std::string line;
-		inputFile >> line;
-		for (int rows = 0; rows < Game::LastLine; rows++)
+		for (int columns = 0; columns < static_cast<int>(line.size()); columns++)
 		{
-			if (line[rows] == 'X')
-				game.AddWall(Vector2i(rows, columns));
+			if (line[columns] == 'X')
+				game.AddWall(Vector2i(columns, row));
 		}
+		++row;
 	}
 	game.cacheWalls();
+	inputFile.close();
 }

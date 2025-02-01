@@ -50,7 +50,7 @@ public:
 	void update(double dt);
 
 	void draw(sf::RenderWindow& win);
-
+	
 	void AddWall(Vector2i wallPos);
 	void RemoveWall(Vector2i wallPos);
 	bool isWall(int cx, int cy);

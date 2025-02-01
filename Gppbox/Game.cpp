@@ -64,6 +64,7 @@ void Game::cacheWalls()
 		rect.setPosition((float)w.x * C::GRID_SIZE, (float)w.y * C::GRID_SIZE);
 		rect.setFillColor(sf::Color(0x07ff07ff));*/
 		Sprite wallSprite = Sprite(wallTexture);
+		wallSprite.setTextureRect(sf::IntRect(0, 0, 8, 8));	
 		wallSprite.setPosition((float)w.x * C::GRID_SIZE, (float)w.y * C::GRID_SIZE);
 		wallSprite.setScale(2,2);
 		
