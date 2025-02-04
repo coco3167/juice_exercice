@@ -175,7 +175,6 @@ int main()
     		// Try to detect when disabling
     		// Or try to get IMGUI window pos and size and disable painting level when inside ?
     		
-    		bool oldEditMode = gameManager.EditMode;
     		ImGui::Checkbox("Edit Mode", &gameManager.EditMode);
     		if (gameManager.EditMode)
     		{
@@ -184,9 +183,9 @@ int main()
     			
     			if (ImGui::Button("Save Level"))
     				gameManager.SaveLevel();
-    			else if (ImGui::Button("Load Level"))
+    			if (ImGui::Button("Load Level"))
     				gameManager.LoadLevel();
-			    else if (oldEditMode)
+			    if (gameManager.EditMode)
 				    HandleLevelPainting(window, g);
     		}
     	}
@@ -225,35 +224,21 @@ int main()
 
 void HandleLevelPainting(const Window& window, Game& g)
 {
+	if (ImGui::IsWindowHovered())
+		return;
 	Vector2i mousePosition = Mouse::getPosition(window);
 	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)
 	{
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
-			if (!isLeftMousePressed)
-			{
-				g.AddWall(mousePosition/C::GRID_SIZE);
-				g.cacheWalls();
-				isLeftMousePressed = true;
-			}
-		}
-		else
-		{
-			isLeftMousePressed = false;
+			g.AddWall(mousePosition/C::GRID_SIZE);
+			g.cacheWalls();
 		}
 
 		if (Mouse::isButtonPressed(Mouse::Right))
 		{
-			if (!isRightMousePressed)
-			{
-				g.RemoveWall(mousePosition/C::GRID_SIZE);
-				g.cacheWalls();
-				isRightMousePressed = true;
-			}
-		}
-		else
-		{
-			isRightMousePressed = false;
+			g.RemoveWall(mousePosition/C::GRID_SIZE);
+			g.cacheWalls();
 		}
 	}
 }
