@@ -32,6 +32,10 @@ public:
 	void SaveLevel();
 	void LoadLevel();
 
-	Entity* AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy);
+	void AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy);
+	bool RemoveEntityByPos(const int& x, const int& y, bool isEnemy);
+	bool IsEntity(const int& x, const int& y, bool isEnemy);
+
+	std::vector<Entity*>::iterator GetEntityByPos(const int& x, const int& y);
 };
 

@@ -195,19 +195,19 @@ bool Game::isWall(int cx, int cy)
 	return false;
 }
 
-void Game::AddEntity(Vector2i entityPos)
+void Game::AddEnemy(Vector2i entityPos)
 {
-	
+	gameManager->AddEntity(entityPos.x, entityPos.y, "res/Perso.png", true);
 }
 
-void Game::RemoveEntity(Vector2i entityPos)
+void Game::RemoveEnemy(Vector2i entityPos)
 {
-	
+	gameManager->RemoveEntityByPos(entityPos.x, entityPos.y, true);
 }
 
-bool Game::isEntity(int cx, int cy)
+bool Game::isEnemy(int x, int y)
 {
-	
+	return gameManager->IsEntity(x, y, true);
 }
 
 

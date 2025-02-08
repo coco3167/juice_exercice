@@ -110,6 +110,7 @@ void Entity::SetCoord(float x, float y)
 	YReal = y;
 	XGrid = int(x / C::GRID_SIZE);
 	YGrid = int(y / C::GRID_SIZE);
+	std::cout << XGrid << " " << YGrid << std::endl;
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
 }

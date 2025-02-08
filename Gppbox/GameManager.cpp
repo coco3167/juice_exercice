@@ -6,9 +6,8 @@
 
 GameManager::GameManager(Game& game): game(game)
 {
-	hero = AddEntity(100, 100, "res/Perso.png", false);
-	entities.push_back(hero);
-	entities.push_back(AddEntity(200,100, "res/Perso.png", true));
+	AddEntity(100, 100, "res/Perso.png", false);
+	AddEntity(200,100, "res/Perso.png", true);
 
 	CreateLevel();
 }
@@ -104,7 +103,44 @@ void GameManager::LoadLevel()
 	game.cacheWalls();
 	inputFile.close();
 }
-Entity* GameManager::AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy)
+
+void GameManager::AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy)
 {
-	return new Entity(x, y, texture, *this, isEnemy);
+	std::cout << x << " " << y << " | ";
+	entities.emplace_back(new Entity(x, y, texture, *this, isEnemy));
+}
+
+bool GameManager::RemoveEntityByPos(const int& x, const int& y, bool isEnemy)
+{
+	auto iterator = GetEntityByPos(x, y);
+	if(iterator == entities.end())
+		return false;
+
+	if((*iterator)->isEnemy != isEnemy)
+		return false;
+	
+	delete *iterator;
+	entities.erase(iterator);
+	return true;
+}
+
+bool GameManager::IsEntity(const int& x, const int& y, bool isEnemy)
+{
+	auto iterator = GetEntityByPos(x, y);
+	if(iterator == entities.end())
+		return false;
+	return (*iterator)->isEnemy == isEnemy;
+}
+
+std::vector<Entity*>::iterator GameManager::GetEntityByPos(const int& x, const int& y)
+{
+	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator<entities.end(); ++iterator)
+	{
+		Entity* entity = *iterator;
+		if(entity->XGrid == x && entity->YGrid == y)
+		{
+			return iterator;
+		}
+	}
+	return entities.end();
 }

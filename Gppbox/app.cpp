@@ -231,16 +231,17 @@ void HandleLevelPainting(const Window& window, Game& g)
 	Vector2i mousePosition = Mouse::getPosition(window);
 	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)
 	{
+		const Vector2i inGameMousePos = mousePosition/C::GRID_SIZE;
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
 			if(currentSpawnableIndex == 0)
 			{
-				g.AddWall(mousePosition/C::GRID_SIZE);
+				g.AddWall(inGameMousePos);
 				g.cacheWalls();
 			}
 			else
 			{
-				return;
+				g.AddEnemy(mousePosition);
 			}
 		}
 
@@ -248,12 +249,12 @@ void HandleLevelPainting(const Window& window, Game& g)
 		{
 			if(currentSpawnableIndex == 0)
 			{
-				g.RemoveWall(mousePosition/C::GRID_SIZE);
+				g.RemoveWall(inGameMousePos);
 				g.cacheWalls();
 			}
 			else
 			{
-				return;
+				g.RemoveEnemy(inGameMousePos);
 			}
 		}
 	}

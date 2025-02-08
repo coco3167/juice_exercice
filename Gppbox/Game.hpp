@@ -55,9 +55,9 @@ public:
 	void RemoveWall(Vector2i wallPos);
 	bool isWall(int cx, int cy);
 	
-	void AddEntity(Vector2i entityPos);
-	void RemoveEntity(Vector2i entityPos);
-	bool isEntity(int cx, int cy);
+	void AddEnemy(Vector2i entityPos);
+	void RemoveEnemy(Vector2i entityPos);
+	bool isEnemy(int x, int y);
 	
 	void im();
 };
