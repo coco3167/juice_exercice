@@ -200,7 +200,7 @@ bool Game::isWall(int cx, int cy)
 
 void Game::AddEnemy(Vector2i entityPos)
 {
-	gameManager->AddEntity(entityPos.x, entityPos.y, "res/Perso.png", true);
+	gameManager->AddEntity(entityPos.x, entityPos.y, "res/Enemy.png", true);
 }
 
 void Game::RemoveEnemy(Vector2i entityPos)

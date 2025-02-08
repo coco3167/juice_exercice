@@ -1,8 +1,7 @@
-
 #include "Entity.hpp"
 #include "C.hpp"
 #include "GameManager.hpp"
-#include <iostream>
+
 
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
@@ -14,6 +13,9 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 	Sprite.setScale(2,2);
 	Sprite.setOrigin(Sprite.getTexture()->getSize().x / 2, Sprite.getTexture()->getSize().y / 2);
 	SetCoord(x*C::GRID_SIZE, y*C::GRID_SIZE);
+
+	// Randomize starting movement direction
+	moveLeft = std::rand()%2 == 0;
 }
 
 void Entity::Update(float deltaTime)
@@ -23,10 +25,11 @@ void Entity::Update(float deltaTime)
 	
 	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
 	YMovement += gameManager.Gravity*deltaTime;
-
+	
 	XRatio += XMovement*deltaTime;
 	YRatio += YMovement*deltaTime;
 
+	// Sprite direction
 	sf::IntRect textureRect = sf::IntRect(Sprite.getTextureRect());
 	if (XMovement < 0 && !isLookingLeft)
 	{
@@ -43,8 +46,10 @@ void Entity::Update(float deltaTime)
 		isLookingLeft = false;
 	}
 
+	// Dragging
 	XMovement *= OnGround ? std::pow(GroundFriction, 10*deltaTime) : std::pow(AirFriction, 10*deltaTime);
 
+	// Apply movement and check for collision
 	while (XRatio > 1)
 	{
 		if (HasCollision(XGrid + 2, YGrid) || HasCollision(XGrid + 2, YGrid + 1))
@@ -93,7 +98,7 @@ void Entity::Update(float deltaTime)
 		YGrid--;
 	}
 
-	// End Update
+	//Sprite position
 	XReal = (XGrid + XRatio) * C::GRID_SIZE;
 	YReal = (YGrid + YRatio) * C::GRID_SIZE;
 	Sprite.setPosition(XReal, YReal);

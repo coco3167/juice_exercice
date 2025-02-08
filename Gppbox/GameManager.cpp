@@ -8,7 +8,7 @@
 GameManager::GameManager(Game& game): game(game)
 {
 	AddEntity(6, 6, "res/Perso.png", false);
-	AddEntity(12,6, "res/Perso.png", true);
+	AddEntity(12,6, "res/Enemy.png", true);
 
 	windowSize = game.win->getSize();
 	windowSize.x /= C::GRID_SIZE;
@@ -32,6 +32,8 @@ void GameManager::Update(float deltaTime)
 	{
 		Entity* entity = *iterator;
 		entity->Update(deltaTime);
+		
+		// Delete entities if going outside the defined world
 		int x = entity->XGrid, y = entity->YGrid;
 		if(x < 0 || y < 0 || x > windowSize.x || entity->YGrid > windowSize.y)
 		{
@@ -39,7 +41,6 @@ void GameManager::Update(float deltaTime)
 			delete entity;
 		}
 	}
-	std::cout << entities.size() << std::endl;
 }
 
 void GameManager::Draw()
@@ -57,6 +58,7 @@ bool GameManager::HasCollision(int x, int y)
 
 void GameManager::CreateLevel()
 {
+	// If no file exists creates one and calls back itself
 	inputFile.open("Level.txt", std::fstream::in);
 	if (inputFile.fail())
 	{

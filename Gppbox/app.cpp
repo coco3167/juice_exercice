@@ -169,12 +169,9 @@ int main()
     		ImGui::DragFloat("Air Friction", &Entity::AirFriction, 0, 1);
     	}
 
+    	// Level editor used to iterate fast. User can add wall and enemies to the level
     	if (ImGui::CollapsingHeader("Level Editor", ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen))
     	{
-			// The fcking left mouse button apply when disabling the edit mode, it shouldn't
-    		// Try to detect when disabling
-    		// Or try to get IMGUI window pos and size and disable painting level when inside ?
-    		
     		ImGui::Checkbox("Edit Mode", &gameManager.EditMode);
     		if (gameManager.EditMode)
     		{
@@ -182,7 +179,8 @@ int main()
     			ImGui::Text("Right Click to Remove");
     			
     			ImGui::Combo("Spawning", &currentSpawnableIndex, "Wall\0Enemy\0\0");
-    				
+
+    			// Maybe add a way to save enemies positioning
     			if (ImGui::Button("Save Level"))
     				gameManager.SaveLevel();
     			if (ImGui::Button("Load Level"))
@@ -226,8 +224,10 @@ int main()
 
 void HandleLevelPainting(const Window& window, Game& g)
 {
+	// If input is for ImGui don't use it to create level edit
 	if (ImGui::GetIO().WantCaptureMouse)
 		return;
+	
 	Vector2i mousePosition = Mouse::getPosition(window);
 	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)
 	{
@@ -244,8 +244,7 @@ void HandleLevelPainting(const Window& window, Game& g)
 				g.AddEnemy(inGameMousePos);
 			}
 		}
-
-		if (Mouse::isButtonPressed(Mouse::Right))
+		else if (Mouse::isButtonPressed(Mouse::Right))
 		{
 			if(currentSpawnableIndex == 0)
 			{
