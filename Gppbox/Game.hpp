@@ -54,5 +54,10 @@ public:
 	void AddWall(Vector2i wallPos);
 	void RemoveWall(Vector2i wallPos);
 	bool isWall(int cx, int cy);
+	
+	void AddEntity(Vector2i entityPos);
+	void RemoveEntity(Vector2i entityPos);
+	bool isEntity(int cx, int cy);
+	
 	void im();
 };
