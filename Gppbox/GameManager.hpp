@@ -31,5 +31,7 @@ public:
 	void CreateLevel();
 	void SaveLevel();
 	void LoadLevel();
+
+	Entity* AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy);
 };
 

@@ -6,18 +6,20 @@
 
 GameManager::GameManager(Game& game): game(game)
 {
-	hero = new Entity(100, 100, "res/Perso.png", *this);
+	hero = AddEntity(100, 100, "res/Perso.png", false);
 	entities.push_back(hero);
+	entities.push_back(AddEntity(200,100, "res/Perso.png", true));
 
 	CreateLevel();
 }
 
 GameManager::~GameManager()
 {
-	for (int loop = 0; loop < entities.size(); loop++)
+	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
-		delete entities[loop];
+		delete *iterator;
 	}
+	entities.clear();
 }
 
 void GameManager::Update(float deltaTime)
@@ -101,4 +103,8 @@ void GameManager::LoadLevel()
 	}
 	game.cacheWalls();
 	inputFile.close();
+}
+Entity* GameManager::AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy)
+{
+	return new Entity(x, y, texture, *this, isEnemy);
 }

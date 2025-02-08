@@ -14,6 +14,8 @@ public :
 	sf::Sprite Sprite;
 	sf::Texture texture;
 	bool isLookingLeft;
+	bool isEnemy;
+	bool moveLeft;
 
 	// Base coordinates
 	int XGrid;
@@ -32,13 +34,13 @@ public :
 	bool OnGround;
 
 
-	Entity(int x, int y, const std::string& texturePath, GameManager& gameManager);
+	Entity(int x, int y, const std::string& texturePath, GameManager& gameManager, bool isEnemy);
 
 	void Update(float deltaTime);
 
 	bool HasCollision(int xGrid, int yGrid);
 	void SetCoord(float x, float y);
-	void MoveOnX(bool rightMovement);
+	void MoveOnX(bool rightMovement = false);
 	void Jump();
 };
 

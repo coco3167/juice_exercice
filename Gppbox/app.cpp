@@ -224,7 +224,7 @@ int main()
 
 void HandleLevelPainting(const Window& window, Game& g)
 {
-	if (ImGui::IsWindowHovered())
+	if (ImGui::IsWindowHovered() || ImGui::IsWindowFocused())
 		return;
 	Vector2i mousePosition = Mouse::getPosition(window);
 	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)

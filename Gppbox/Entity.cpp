@@ -7,7 +7,7 @@
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
-Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager) : gameManager(gameManager)
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : gameManager(gameManager), isEnemy(isEnemy)
 {
 	texture.loadFromFile(texturePath);
 	Sprite.setTexture(texture);
@@ -18,6 +18,9 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 
 void Entity::Update(float deltaTime)
 {
+	if (isEnemy)
+		MoveOnX(moveLeft);
+	
 	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
 	YMovement += gameManager.Gravity*deltaTime;
 
@@ -48,6 +51,7 @@ void Entity::Update(float deltaTime)
 		{
 			XRatio = 1;
 			XMovement = 0;
+			moveLeft = false;
 			break;
 		}
 		XRatio--;
@@ -59,6 +63,7 @@ void Entity::Update(float deltaTime)
 		{
 			XRatio = 0;
 			XMovement = 0;
+			moveLeft = true;
 			break;
 		}
 		XRatio++;
