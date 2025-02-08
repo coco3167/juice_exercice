@@ -2,7 +2,6 @@
 #include <fstream>
 
 #include "Entity.hpp"
-#include "Game.hpp"
 class Game;
 
 
@@ -11,7 +10,7 @@ class GameManager
 {
 private:
 	Game& game;
-	//int levelArray[Game::Cols][Game::LastLine];
+	sf::Vector2u windowSize;
 	
 public:
 	int Gravity = 700;

@@ -13,7 +13,7 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 	Sprite.setTexture(texture);
 	Sprite.setScale(2,2);
 	Sprite.setOrigin(Sprite.getTexture()->getSize().x / 2, Sprite.getTexture()->getSize().y / 2);
-	SetCoord(x, y);
+	SetCoord(x*C::GRID_SIZE, y*C::GRID_SIZE);
 }
 
 void Entity::Update(float deltaTime)
@@ -110,7 +110,6 @@ void Entity::SetCoord(float x, float y)
 	YReal = y;
 	XGrid = int(x / C::GRID_SIZE);
 	YGrid = int(y / C::GRID_SIZE);
-	std::cout << XGrid << " " << YGrid << std::endl;
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
 	XRatio = (x - XGrid * C::GRID_SIZE)/C::GRID_SIZE;
 }

@@ -45,7 +45,7 @@ int main()
 	
     //sf::RenderWindow window(sf::VideoMode(1920, 1080,32), "SFML works!");
     //sf::RenderWindow window(sf::VideoMode(800, 600,32), "SFML works!");
-    sf::RenderWindow window(sf::VideoMode(1280, 720,32), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1280, 720,32), "Corentin Project", Style::Titlebar | Style::Close);
 	window.setVerticalSyncEnabled(false);
     Font font;
 
@@ -241,7 +241,7 @@ void HandleLevelPainting(const Window& window, Game& g)
 			}
 			else
 			{
-				g.AddEnemy(mousePosition);
+				g.AddEnemy(inGameMousePos);
 			}
 		}
 

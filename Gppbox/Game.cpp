@@ -14,9 +14,12 @@
 int Game::Cols = 1280 / C::GRID_SIZE;
 int Game::LastLine = 720 / C::GRID_SIZE - 1;
 
-Game::Game(sf::RenderWindow * win) : gameManager(new GameManager(*this)) {
+Game::Game(sf::RenderWindow * win) {
 	this->win = win;
+	win->setFramerateLimit(144);
 	bg = sf::RectangleShape(Vector2f((float)win->getSize().x, (float)win->getSize().y));
+
+	gameManager = new GameManager(*this);
 
 	/*bool isOk = tex.loadFromFile("res/bg.jpg");
 	if (!isOk) {
