@@ -181,6 +181,8 @@ int main()
     			ImGui::Text("Left Click to Add");
     			ImGui::Text("Right Click to Remove");
     			
+    			ImGui::Combo("Spawning", &currentSpawnableIndex, "Wall\0Enemy\0\0");
+    				
     			if (ImGui::Button("Save Level"))
     				gameManager.SaveLevel();
     			if (ImGui::Button("Load Level"))
@@ -224,21 +226,35 @@ int main()
 
 void HandleLevelPainting(const Window& window, Game& g)
 {
-	if (ImGui::IsWindowHovered() || ImGui::IsWindowFocused())
+	if (ImGui::GetIO().WantCaptureMouse)
 		return;
 	Vector2i mousePosition = Mouse::getPosition(window);
 	if (mousePosition.x >= 0 && mousePosition.y >= 0 && mousePosition.x < window.getSize().x && mousePosition.y < window.getSize().y)
 	{
 		if (Mouse::isButtonPressed(Mouse::Left))
 		{
-			g.AddWall(mousePosition/C::GRID_SIZE);
-			g.cacheWalls();
+			if(currentSpawnableIndex == 0)
+			{
+				g.AddWall(mousePosition/C::GRID_SIZE);
+				g.cacheWalls();
+			}
+			else
+			{
+				return;
+			}
 		}
 
 		if (Mouse::isButtonPressed(Mouse::Right))
 		{
-			g.RemoveWall(mousePosition/C::GRID_SIZE);
-			g.cacheWalls();
+			if(currentSpawnableIndex == 0)
+			{
+				g.RemoveWall(mousePosition/C::GRID_SIZE);
+				g.cacheWalls();
+			}
+			else
+			{
+				return;
+			}
 		}
 	}
 }

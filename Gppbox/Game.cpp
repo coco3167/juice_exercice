@@ -195,6 +195,22 @@ bool Game::isWall(int cx, int cy)
 	return false;
 }
 
+void Game::AddEntity(Vector2i entityPos)
+{
+	
+}
+
+void Game::RemoveEntity(Vector2i entityPos)
+{
+	
+}
+
+bool Game::isEntity(int cx, int cy)
+{
+	
+}
+
+
 void Game::im()
 {
 
