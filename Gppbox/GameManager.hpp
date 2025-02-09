@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "Entity.hpp"
+#include "Tween.h"
 class Game;
 
 
@@ -17,9 +18,12 @@ public:
 	bool EditMode = false;
 	std::fstream inputFile;
 	
-	sf::View camera;
+	sf::View view;
 	Entity* hero;
 	std::vector<Entity*> entities;
+
+	float viewZoom;
+	Tween screenShakeTween, unScreenShakeTween;
 	
 	GameManager(Game& game);
 	~GameManager();
@@ -34,6 +38,8 @@ public:
 	void AddEntity(const int& x, const int& y, const std::string& texture, bool isEnemy);
 	bool RemoveEntityByPos(const int& x, const int& y, bool isEnemy);
 	bool IsEntity(const int& x, const int& y, bool isEnemy);
+
+	void ShakeScreen(int weight);
 
 	std::vector<Entity*>::iterator GetEntityByPos(const int& x, const int& y);
 };

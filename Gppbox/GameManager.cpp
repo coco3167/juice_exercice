@@ -4,16 +4,23 @@
 
 #include "C.hpp"
 #include "Game.hpp"
+#include "Tween.h"
 
-GameManager::GameManager(Game& game): game(game)
+GameManager::GameManager(Game& game):
+	game(game), screenShakeTween(&viewZoom, .95f, .5f, &unScreenShakeTween), unScreenShakeTween(&viewZoom, 1, 1.f)
 {
 	AddEntity(6, 6, "res/Perso.png", false);
+	hero = entities.front();
 	AddEntity(12,6, "res/Enemy.png", true);
 
 	windowSize = game.win->getSize();
+	view.reset(FloatRect(0,0, windowSize.x, windowSize.y));
+	view.setCenter(windowSize.x/2, windowSize.y/2);
+	viewZoom = 1;
+	
 	windowSize.x /= C::GRID_SIZE;
 	windowSize.y /= C::GRID_SIZE;
-
+	
 	CreateLevel();
 }
 
@@ -40,6 +47,21 @@ void GameManager::Update(float deltaTime)
 			iterator = --entities.erase(iterator);
 			delete entity;
 		}
+	}
+
+	if(screenShakeTween.isPlaying)
+	{
+		screenShakeTween.Update(deltaTime);
+		float x = windowSize.x*C::GRID_SIZE * *screenShakeTween.variableToTween;
+		float y = windowSize.y*C::GRID_SIZE * *screenShakeTween.variableToTween;
+		view.setSize(x, y);
+	}
+	else if(unScreenShakeTween.isPlaying)
+	{
+		unScreenShakeTween.Update(deltaTime);
+		float x = windowSize.x*C::GRID_SIZE * *unScreenShakeTween.variableToTween;
+		float y = windowSize.y*C::GRID_SIZE * *unScreenShakeTween.variableToTween;
+		view.setSize(x, y);
 	}
 }
 
@@ -157,4 +179,9 @@ std::vector<Entity*>::iterator GameManager::GetEntityByPos(const int& x, const i
 		}
 	}
 	return entities.end();
+}
+
+void GameManager::ShakeScreen(int weight)
+{
+	screenShakeTween.isPlaying = true;
 }

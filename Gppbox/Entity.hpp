@@ -42,5 +42,6 @@ public :
 	void SetCoord(float x, float y);
 	void MoveOnX(bool rightMovement = false);
 	void Jump();
+	void Shoot();
 };
 

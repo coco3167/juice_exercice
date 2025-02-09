@@ -58,6 +58,7 @@ public:
 	void AddEnemy(Vector2i entityPos);
 	void RemoveEnemy(Vector2i entityPos);
 	bool isEnemy(int x, int y);
+
 	
 	void im();
 };

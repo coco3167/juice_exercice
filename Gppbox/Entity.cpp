@@ -1,4 +1,7 @@
 #include "Entity.hpp"
+
+#include <iostream>
+
 #include "C.hpp"
 #include "GameManager.hpp"
 
@@ -132,3 +135,11 @@ void Entity::Jump()
 	YMovement -= JumpForce;
 	OnGround = false;
 }
+
+void Entity::Shoot()
+{
+	gameManager.ShakeScreen(10);
+	//std::cout << "shoot" << std::endl;
+}
+
+

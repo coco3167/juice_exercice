@@ -17,6 +17,7 @@ int Game::LastLine = 720 / C::GRID_SIZE - 1;
 Game::Game(sf::RenderWindow * win) {
 	this->win = win;
 	win->setFramerateLimit(144);
+	
 	bg = sf::RectangleShape(Vector2f((float)win->getSize().x, (float)win->getSize().y));
 
 	gameManager = new GameManager(*this);
@@ -108,8 +109,8 @@ void Game::pollInput(double dt) {
 		gameManager->hero->Jump();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T)) {
-
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+		gameManager->hero->Shoot();
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
 		if (!wasPressed) {
@@ -157,6 +158,7 @@ void Game::update(double dt) {
 	states.texture = &tex;
 	sh->setUniform("texture", tex);
 	//sh->setUniform("time", g_time);
+	win.setView(gameManager->view);
 	win.draw(bg, states);
 
 	beforeParts.draw(win);
@@ -212,6 +214,7 @@ bool Game::isEnemy(int x, int y)
 {
 	return gameManager->IsEntity(x, y, true);
 }
+
 
 
 void Game::im()
