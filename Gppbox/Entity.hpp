@@ -1,14 +1,19 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
+#include "Bullet.h"
 class GameManager;
 
 class Entity
 {
 private:
-	GameManager& gameManager;
-	static constexpr float shootInterval = .1f;
+	GameManager* m_gameManager;
 
-public :
+	// Shoot parameters
+	static constexpr float SHOOT_INTERVAL = .1f;
+	sf::Clock m_shootTime;
+
+public:
 	static int XSpeed, XAirSpeed, MaxSpeed, JumpForce;
 	static float GroundFriction, AirFriction;
 	
@@ -34,10 +39,13 @@ public :
 
 	bool OnGround;
 
-	sf::Clock shootTime;
+	std::vector<Bullet> bullets;
+
+	
 
 
 	Entity(int x, int y, const std::string& texturePath, GameManager& gameManager, bool isEnemy);
+	Entity& operator=(const Entity& entity);
 
 	void Update(float deltaTime);
 

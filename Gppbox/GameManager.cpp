@@ -37,16 +37,35 @@ void GameManager::Update(float deltaTime)
 {
 	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
-		Entity* entity = *iterator;
-		entity->Update(deltaTime);
+		Entity& entity = **iterator;
+		entity.Update(deltaTime);
 		
 		// Delete entities if going outside the defined world
-		int x = entity->XGrid, y = entity->YGrid;
-		if(x < 0 || y < 0 || x > windowSize.x || entity->YGrid > windowSize.y)
+		int x = entity.XGrid, y = entity.YGrid;
+		if(x < 0 || y < 0 || x > windowSize.x || entity.YGrid > windowSize.y)
 		{
 			iterator = --entities.erase(iterator);
-			delete entity;
 		}
+	}
+
+	for(std::vector<Bullet>::iterator bulletIterator = hero->bullets.begin(); bulletIterator < hero->bullets.end();)
+	{
+		Bullet& bullet = *bulletIterator;
+		bool bulletErased = false;
+		for (std::vector<Entity*>::iterator entityIterator = ++entities.begin(); entityIterator < entities.end();)
+		{
+			Entity& entity = **entityIterator;
+			if(bullet.rectangle.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
+			{
+				bulletIterator = hero->bullets.erase(bulletIterator);
+				entityIterator = entities.erase(entityIterator);
+				bulletErased = true;
+				break;
+			}
+			++entityIterator;
+		}
+		if(!bulletErased)
+			++bulletIterator;
 	}
 
 	if(screenShakeTween.isPlaying)
@@ -69,8 +88,11 @@ void GameManager::Draw()
 {
 	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
-		game.win->draw((*iterator)->Sprite);
+		Entity& entity = **iterator;
+		game.win->draw(entity.Sprite);
 	}
+	for (Bullet& bullet : hero->bullets)
+		game.win->draw(bullet.rectangle);
 }
 
 bool GameManager::HasCollision(int x, int y)
@@ -81,10 +103,10 @@ bool GameManager::HasCollision(int x, int y)
 void GameManager::CreateLevel()
 {
 	// If no file exists creates one and calls back itself
-	inputFile.open("Level.txt", std::fstream::in);
+	inputFile.open("res/Level.txt", std::fstream::in);
 	if (inputFile.fail())
 	{
-		inputFile.open("Level.txt", std::fstream::out);
+		inputFile.open("res/Level.txt", std::fstream::out);
 		for (int rows = 0; rows < Game::LastLine + 1; rows++)
 		{
 			for (int columns = 0; columns < Game::Cols; columns++)
@@ -107,7 +129,7 @@ void GameManager::CreateLevel()
 
 void GameManager::SaveLevel()
 {
-	inputFile.open("Level.txt", std::fstream::out);
+	inputFile.open("res/Level.txt", std::fstream::out);
 	for (int rows = 0; rows < Game::LastLine + 1; rows++)
 	{
 		for (int columns = 0; columns < Game::Cols; columns++)
@@ -125,7 +147,7 @@ void GameManager::SaveLevel()
 void GameManager::LoadLevel()
 {
 	game.walls.clear();
-	inputFile.open("Level.txt", std::fstream::in);
+	inputFile.open("res/Level.txt", std::fstream::in);
 	std::string line;
 	int row = 0;
 	while (inputFile >> line)
@@ -148,21 +170,20 @@ void GameManager::AddEntity(const int& x, const int& y, const std::string& textu
 
 bool GameManager::RemoveEntityByPos(const int& x, const int& y, bool isEnemy)
 {
-	auto iterator = GetEntityByPos(x, y);
+	std::vector<Entity*>::iterator iterator = GetEntityByPos(x, y);
 	if(iterator == entities.end())
 		return false;
 
 	if((*iterator)->isEnemy != isEnemy)
 		return false;
 	
-	delete *iterator;
 	entities.erase(iterator);
 	return true;
 }
 
 bool GameManager::IsEntity(const int& x, const int& y, bool isEnemy)
 {
-	auto iterator = GetEntityByPos(x, y);
+	std::vector<Entity*>::iterator iterator = GetEntityByPos(x, y);
 	if(iterator == entities.end())
 		return false;
 	return (*iterator)->isEnemy == isEnemy;
@@ -172,8 +193,8 @@ std::vector<Entity*>::iterator GameManager::GetEntityByPos(const int& x, const i
 {
 	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator<entities.end(); ++iterator)
 	{
-		Entity* entity = *iterator;
-		if(entity->XGrid == x && entity->YGrid == y)
+		Entity& entity = **iterator;
+		if(entity.XGrid == x && entity.YGrid == y)
 		{
 			return iterator;
 		}

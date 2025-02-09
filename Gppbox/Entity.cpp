@@ -9,7 +9,7 @@
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
-Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : gameManager(gameManager), isEnemy(isEnemy)
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : m_gameManager(&gameManager), isEnemy(isEnemy)
 {
 	texture.loadFromFile(texturePath);
 	Sprite.setTexture(texture);
@@ -19,6 +19,20 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 
 	// Randomize starting movement direction
 	moveLeft = std::rand()%2 == 0;
+	bullets = std::vector<Bullet>();
+}
+
+Entity& Entity::operator=(const Entity& entity)
+{
+	m_gameManager = entity.m_gameManager;
+	isEnemy = entity.isEnemy;
+	texture = entity.texture;
+	Sprite.setTexture(texture);
+	Sprite.setScale(entity.Sprite.getScale());
+	Sprite.setOrigin(entity.Sprite.getOrigin());
+	SetCoord(entity.XReal, entity.YReal);
+	moveLeft = entity.moveLeft;
+	return *this;
 }
 
 void Entity::Update(float deltaTime)
@@ -27,7 +41,7 @@ void Entity::Update(float deltaTime)
 		MoveOnX(moveLeft);
 	
 	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
-	YMovement += gameManager.Gravity*deltaTime;
+	YMovement += m_gameManager->Gravity*deltaTime;
 	
 	XRatio += XMovement*deltaTime;
 	YRatio += YMovement*deltaTime;
@@ -105,11 +119,26 @@ void Entity::Update(float deltaTime)
 	XReal = (XGrid + XRatio) * C::GRID_SIZE;
 	YReal = (YGrid + YRatio) * C::GRID_SIZE;
 	Sprite.setPosition(XReal, YReal);
+
+	// Bullets handling
+	for(std::vector<Bullet>::iterator iterator = bullets.begin(); iterator < bullets.end();)
+	{
+		Bullet& bullet(*iterator);
+		bullet.Update(deltaTime);
+		if(bullet.IsBulletEnd())
+		{
+			iterator = bullets.erase(iterator);
+		}
+		else
+		{
+			++iterator;
+		}
+	}
 }
 
 bool Entity::HasCollision(int xGrid, int yGrid)
 {
-	return gameManager.HasCollision(xGrid, yGrid);
+	return m_gameManager->HasCollision(xGrid, yGrid);
 }
 
 void Entity::SetCoord(float x, float y)
@@ -138,11 +167,12 @@ void Entity::Jump()
 
 void Entity::Shoot()
 {
-	if(shootTime.getElapsedTime().asSeconds() >= shootInterval)
+	if(m_shootTime.getElapsedTime().asSeconds() >= SHOOT_INTERVAL)
 	{
-		gameManager.ShakeScreen(10);
+		m_gameManager->ShakeScreen(10);
+		bullets.emplace_back(sf::Vector2f(XReal, YReal), isLookingLeft);
 		std::cout << "shoot" << std::endl;
-		shootTime.restart();
+		m_shootTime.restart();
 	}
 	
 }
