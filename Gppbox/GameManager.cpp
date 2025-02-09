@@ -7,7 +7,7 @@
 #include "Tween.h"
 
 GameManager::GameManager(Game& game):
-	game(game), screenShakeTween(&viewZoom, .95f, .5f, &unScreenShakeTween), unScreenShakeTween(&viewZoom, 1, 1.f)
+	game(game), screenShakeTween(&viewZoom, .98f, .5f, &unScreenShakeTween), unScreenShakeTween(&viewZoom, 1, 1.f)
 {
 	AddEntity(6, 6, "res/Perso.png", false);
 	hero = entities.front();

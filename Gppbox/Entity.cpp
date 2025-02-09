@@ -138,8 +138,13 @@ void Entity::Jump()
 
 void Entity::Shoot()
 {
-	gameManager.ShakeScreen(10);
-	//std::cout << "shoot" << std::endl;
+	if(shootTime.getElapsedTime().asSeconds() >= shootInterval)
+	{
+		gameManager.ShakeScreen(10);
+		std::cout << "shoot" << std::endl;
+		shootTime.restart();
+	}
+	
 }
 
 

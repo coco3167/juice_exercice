@@ -6,6 +6,7 @@ class Entity
 {
 private:
 	GameManager& gameManager;
+	static constexpr float shootInterval = .1f;
 
 public :
 	static int XSpeed, XAirSpeed, MaxSpeed, JumpForce;
@@ -32,6 +33,8 @@ public :
 	float YMovement;
 
 	bool OnGround;
+
+	sf::Clock shootTime;
 
 
 	Entity(int x, int y, const std::string& texturePath, GameManager& gameManager, bool isEnemy);
