@@ -17,8 +17,8 @@ void Tween::Update(const float& dt)
 
 void Tween::NextValue(const float& dt)
 {
-    *variableToTween += dt/duration*endValue*shouldIncrement;
-    std::cout << *variableToTween << std::endl;
+    *variableToTween += (dt/duration) * std::abs(endValue-*variableToTween)*shouldIncrement;
+    // std::cout << *variableToTween << std::endl;
 }
 
 Tween::Tween(float* variableToTween, const float& endValue, const float& duration, Tween* nextTween):
