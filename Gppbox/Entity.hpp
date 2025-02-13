@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Bullet.hpp"
 
-#include "Bullet.h"
 class GameManager;
 
 class Entity
@@ -39,7 +39,7 @@ public:
 
 	bool OnGround;
 
-	std::vector<Bullet> bullets;
+	std::vector<Bullet*> bullets;
 
 	
 

@@ -4,10 +4,13 @@
 
 #include "C.hpp"
 #include "Game.hpp"
-#include "Tween.h"
+#include "Tween.hpp"
 
-GameManager::GameManager(Game& game):
-	game(game), screenShakeTween(&viewZoom, .98f, .5f, &unScreenShakeTween), unScreenShakeTween(&viewZoom, 1, 1.f)
+GameManager::GameManager(Game& game): 
+	game(game),
+	screenShakeTween(&viewZoom, .98f, .5f, &unScreenShakeTween),
+	unScreenShakeTween(&viewZoom, 1, 1.f),
+	bulletPool(Pool<Bullet>(20))
 {
 	AddEntity(6, 6, "res/Perso.png", false);
 	hero = entities.front();
@@ -20,6 +23,7 @@ GameManager::GameManager(Game& game):
 	
 	windowSize.x /= C::GRID_SIZE;
 	windowSize.y /= C::GRID_SIZE;
+
 	
 	CreateLevel();
 }
@@ -48,14 +52,14 @@ void GameManager::Update(float deltaTime)
 		}
 	}
 
-	for(std::vector<Bullet>::iterator bulletIterator = hero->bullets.begin(); bulletIterator < hero->bullets.end();)
+	for(std::vector<Bullet*>::iterator bulletIterator = hero->bullets.begin(); bulletIterator < hero->bullets.end();)
 	{
-		Bullet& bullet = *bulletIterator;
+		Bullet* bullet = *bulletIterator;
 		bool bulletErased = false;
 		for (std::vector<Entity*>::iterator entityIterator = ++entities.begin(); entityIterator < entities.end();)
 		{
 			Entity& entity = **entityIterator;
-			if(bullet.rectangle.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
+			if(bullet->rectangle.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
 			{
 				bulletIterator = hero->bullets.erase(bulletIterator);
 				entityIterator = entities.erase(entityIterator);
@@ -91,8 +95,8 @@ void GameManager::Draw()
 		Entity& entity = **iterator;
 		game.win->draw(entity.Sprite);
 	}
-	for (Bullet& bullet : hero->bullets)
-		game.win->draw(bullet.rectangle);
+	for (Bullet* bullet : hero->bullets)
+		game.win->draw(bullet->rectangle);
 }
 
 bool GameManager::HasCollision(int x, int y)

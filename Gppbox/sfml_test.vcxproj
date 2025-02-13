@@ -170,6 +170,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="HotReloadShader.cpp" />
+    <ClCompile Include="IPoolable.cpp" />
     <ClCompile Include="Lib.cpp" />
     <ClCompile Include="libs\imgui-sfml\imgui-SFML.cpp" />
     <ClCompile Include="libs\imgui\imgui.cpp" />
@@ -177,13 +178,14 @@
     <ClCompile Include="libs\imgui\imgui_widgets.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Pool.cpp" />
     <ClCompile Include="sys.cpp" />
     <ClCompile Include="Tween.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="app.h" />
+    <ClInclude Include="app.hpp" />
     <ClInclude Include="Bloom.hpp" />
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="C.hpp" />
     <ClInclude Include="Dice.hpp" />
     <ClInclude Include="Entity.hpp" />
@@ -191,14 +193,16 @@
     <ClInclude Include="GameManager.hpp" />
     <ClInclude Include="HotReloadShader.hpp" />
     <ClInclude Include="Interp.hpp" />
+    <ClInclude Include="IPoolable.hpp" />
     <ClInclude Include="Lib.hpp" />
     <ClInclude Include="libs\imgui-sfml\imgui-SFML.h" />
     <ClInclude Include="libs\imgui-sfml\imgui-SFML_export.h" />
     <ClInclude Include="libs\imgui\imgui.h" />
     <ClInclude Include="Particle.hpp" />
     <ClInclude Include="ParticleMan.hpp" />
+    <ClInclude Include="Pool.hpp" />
     <ClInclude Include="sys.hpp" />
-    <ClInclude Include="Tween.h" />
+    <ClInclude Include="Tween.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

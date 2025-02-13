@@ -2,10 +2,11 @@
 #include <fstream>
 
 #include "Entity.hpp"
-#include "Tween.h"
+#include "Pool.hpp"
+#include "Tween.hpp"
+#include "Bullet.hpp"
+
 class Game;
-
-
 
 class GameManager
 {
@@ -21,6 +22,7 @@ public:
 	sf::View view;
 	Entity* hero;
 	std::vector<Entity*> entities;
+	Pool<Bullet> bulletPool;
 
 	float viewZoom;
 	Tween screenShakeTween, unScreenShakeTween;

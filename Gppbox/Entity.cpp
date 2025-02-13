@@ -1,9 +1,8 @@
-#include "Entity.hpp"
-
 #include <iostream>
 
 #include "C.hpp"
 #include "GameManager.hpp"
+#include "Entity.hpp"
 
 
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
@@ -19,7 +18,6 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 
 	// Randomize starting movement direction
 	moveLeft = std::rand()%2 == 0;
-	bullets = std::vector<Bullet>();
 }
 
 Entity& Entity::operator=(const Entity& entity)
@@ -121,18 +119,15 @@ void Entity::Update(float deltaTime)
 	Sprite.setPosition(XReal, YReal);
 
 	// Bullets handling
-	for(std::vector<Bullet>::iterator iterator = bullets.begin(); iterator < bullets.end();)
+	for(std::vector<Bullet*>::iterator iterator = bullets.begin(); iterator < bullets.end();)
 	{
-		Bullet& bullet(*iterator);
-		bullet.Update(deltaTime);
-		if(bullet.IsBulletEnd())
-		{
+		Bullet* bullet(*iterator);
+		bullet->Update(deltaTime);
+		
+		if(bullet->IsBulletEnd())
 			iterator = bullets.erase(iterator);
-		}
 		else
-		{
 			++iterator;
-		}
 	}
 }
 
@@ -170,7 +165,7 @@ void Entity::Shoot()
 	if(m_shootTime.getElapsedTime().asSeconds() >= SHOOT_INTERVAL)
 	{
 		m_gameManager->ShakeScreen(10);
-		bullets.emplace_back(sf::Vector2f(XReal, YReal), isLookingLeft);
+		bullets.emplace_back(m_gameManager->bulletPool.Get());
 		std::cout << "shoot" << std::endl;
 		m_shootTime.restart();
 	}

@@ -18,7 +18,7 @@
 #include "GameManager.hpp"
 #include "Interp.hpp"
 #include "HotReloadShader.hpp"
-#include "app.h"
+#include "app.hpp"
 
 
 #define WIN32_LEAN_AND_MEAN
