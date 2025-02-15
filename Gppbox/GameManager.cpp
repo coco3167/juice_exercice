@@ -8,8 +8,8 @@
 
 GameManager::GameManager(Game& game): 
 	game(game),
-	screenShakeTween(&viewZoom, .98f, .5f, &unScreenShakeTween),
-	unScreenShakeTween(&viewZoom, 1, 1.f),
+	screenShakeTween(&viewZoom, .95f, .5f, &unScreenShakeTween),
+	unScreenShakeTween(&viewZoom, 1, .2f),
 	bulletPool(Pool<Bullet>(20))
 {
 	AddEntity(6, 6, "res/Perso.png", false);
@@ -59,10 +59,11 @@ void GameManager::Update(float deltaTime)
 		for (std::vector<Entity*>::iterator entityIterator = ++entities.begin(); entityIterator < entities.end();)
 		{
 			Entity& entity = **entityIterator;
+			
 			if(bullet->rectangle.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
 			{
 				bulletIterator = hero->bullets.erase(bulletIterator);
-				entityIterator = entities.erase(entityIterator);
+				(*entityIterator)->Hurt();
 				bulletErased = true;
 				break;
 			}
@@ -70,6 +71,22 @@ void GameManager::Update(float deltaTime)
 		}
 		if(!bulletErased)
 			++bulletIterator;
+	}
+
+	for (std::vector<Entity*>::iterator entityIterator = ++entities.begin(); entityIterator < entities.end();)
+	{
+		Entity& entity = **entityIterator;
+		
+		if(entity.isAlive > .9f)
+		{
+			// TODO
+			entityIterator = entities.erase(entityIterator);
+			delete &entity;
+		}
+		else
+		{
+			++entityIterator;
+		}
 	}
 
 	if(screenShakeTween.isPlaying)

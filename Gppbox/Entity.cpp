@@ -8,7 +8,7 @@
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
-Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : m_gameManager(&gameManager), isEnemy(isEnemy)
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : m_gameManager(&gameManager), isEnemy(isEnemy), deathTween(&isAlive, 1.f, .05f)
 {
 	texture.loadFromFile(texturePath);
 	Sprite.setTexture(texture);
@@ -35,6 +35,11 @@ Entity& Entity::operator=(const Entity& entity)
 
 void Entity::Update(float deltaTime)
 {
+	if(deathTween.isPlaying)
+		deathTween.Update(deltaTime);
+	if(isAlive > 0)
+		return;
+	
 	if (isEnemy)
 		MoveOnX(moveLeft);
 	
@@ -166,10 +171,16 @@ void Entity::Shoot()
 	{
 		m_gameManager->ShakeScreen(10);
 		bullets.emplace_back(m_gameManager->bulletPool.Get());
-		std::cout << "shoot" << std::endl;
+		bullets.back()->Init({XReal, YReal - 5}, isLookingLeft);
 		m_shootTime.restart();
 	}
 	
+}
+
+void Entity::Hurt()
+{
+	Sprite.setColor(sf::Color::Red);
+	deathTween.isPlaying = true;
 }
 
 

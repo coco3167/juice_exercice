@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Bullet.hpp"
+#include "Tween.hpp"
 
 class GameManager;
 
@@ -22,6 +23,10 @@ public:
 	bool isLookingLeft;
 	bool isEnemy;
 	bool moveLeft;
+
+	// Death
+	Tween deathTween;
+	float isAlive = 0.f;
 
 	// Base coordinates
 	int XGrid;
@@ -54,5 +59,6 @@ public:
 	void MoveOnX(bool rightMovement = false);
 	void Jump();
 	void Shoot();
+	void Hurt();
 };
 
