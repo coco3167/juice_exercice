@@ -46,8 +46,10 @@ void Entity::Update(float deltaTime)
 	XMovement = std::clamp(XMovement, -float(MaxSpeed), float(MaxSpeed));
 	YMovement += m_gameManager->Gravity*deltaTime;
 	
-	XRatio += XMovement*deltaTime;
+	XRatio += (XMovement + recoil)*deltaTime;
 	YRatio += YMovement*deltaTime;
+
+	recoil = 0;
 
 	// Sprite direction
 	sf::IntRect textureRect = sf::IntRect(Sprite.getTextureRect());
@@ -172,6 +174,9 @@ void Entity::Shoot()
 		m_gameManager->ShakeScreen(10);
 		bullets.emplace_back(m_gameManager->bulletPool.Get());
 		bullets.back()->Init({XReal, YReal - 5}, isLookingLeft);
+
+		recoil = (isLookingLeft ? 1 : -1)*100;
+		
 		m_shootTime.restart();
 	}
 	

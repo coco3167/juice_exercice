@@ -45,6 +45,7 @@ public:
 	bool OnGround;
 
 	std::vector<Bullet*> bullets;
+	float recoil;
 
 	
 
