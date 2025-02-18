@@ -189,6 +189,11 @@ int main()
 				    HandleLevelPainting(window, g);
     		}
     	}
+
+    	ImGui::Text("QD for movement"
+				 "\nSpace to Jump"
+				 "\nEnter to shoot bullets"
+				 "\nP to use Laser");
 		g.im();
 
         g.draw(window);
@@ -236,12 +241,17 @@ void HandleLevelPainting(const Window& window, Game& g)
 		{
 			if(currentSpawnableIndex == 0)
 			{
-				g.AddWall(inGameMousePos);
-				g.cacheWalls();
+				if(!g.isWall(inGameMousePos.x, inGameMousePos.y))
+				{
+					g.AddWall(inGameMousePos);
+					g.cacheWalls();
+				}
 			}
 			else
 			{
-				g.AddEnemy(inGameMousePos);
+				// TODO rajouter une limite pour pas spawn trop d'ennemies
+				if(!g.isEnemy(inGameMousePos.x, inGameMousePos.y))
+					g.AddEnemy(inGameMousePos);
 			}
 		}
 		else if (Mouse::isButtonPressed(Mouse::Right))

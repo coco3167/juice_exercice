@@ -112,6 +112,13 @@ void Game::pollInput(double dt) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
 		gameManager->hero->Shoot();
 	}
+
+	// Laser Input
+	if(!gameManager->hero->isLasering && Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+		gameManager->hero->StartLasering();
+	else if(gameManager->hero->isLasering && !Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+		gameManager->hero->StopLasering();
+	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
 		if (!wasPressed) {
 			onSpacePressed();

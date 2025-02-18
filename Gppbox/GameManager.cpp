@@ -10,11 +10,31 @@ GameManager::GameManager(Game& game):
 	game(game),
 	screenShakeTween(&viewZoom, .95f, .5f, &unScreenShakeTween),
 	unScreenShakeTween(&viewZoom, 1, .2f),
+	screenShakeLaserTween(&viewZoom, .9f, 1.f, &unScreenShakeLaserTween),
+	unScreenShakeLaserTween(&viewZoom, 1, 1.f),
 	bulletPool(Pool<Bullet>(20))
 {
 	AddEntity(6, 6, "res/Perso.png", false);
 	hero = entities.front();
-	AddEntity(12,6, "res/Enemy.png", true);
+
+	// Spawn enemies
+	{
+		AddEntity(12,6, "res/Enemy.png", true);
+		AddEntity(14,6, "res/Enemy.png", true);
+		AddEntity(16,6, "res/Enemy.png", true);
+		AddEntity(18,6, "res/Enemy.png", true);
+		AddEntity(20,6, "res/Enemy.png", true);
+		AddEntity(22,6, "res/Enemy.png", true);
+		AddEntity(24,6, "res/Enemy.png", true);
+		AddEntity(26,6, "res/Enemy.png", true);
+		AddEntity(28,6, "res/Enemy.png", true);
+		AddEntity(30,6, "res/Enemy.png", true);
+		AddEntity(32,6, "res/Enemy.png", true);
+		AddEntity(34,6, "res/Enemy.png", true);
+		AddEntity(36,6, "res/Enemy.png", true);
+		AddEntity(38,6, "res/Enemy.png", true);
+		AddEntity(40,6, "res/Enemy.png", true);
+	}
 
 	windowSize = game.win->getSize();
 	view.reset(FloatRect(0,0, windowSize.x, windowSize.y));
@@ -50,6 +70,11 @@ void GameManager::Update(float deltaTime)
 		{
 			iterator = --entities.erase(iterator);
 		}
+
+		if(hero->isLasering && &entity != hero && hero->laser.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
+		{
+			entity.Hurt();
+		}
 	}
 
 	for(std::vector<Bullet*>::iterator bulletIterator = hero->bullets.begin(); bulletIterator < hero->bullets.end();)
@@ -59,7 +84,13 @@ void GameManager::Update(float deltaTime)
 		for (std::vector<Entity*>::iterator entityIterator = ++entities.begin(); entityIterator < entities.end();)
 		{
 			Entity& entity = **entityIterator;
-			
+			if(hero->isLasering && hero->laser.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
+			{
+				(*entityIterator)->Hurt();
+				++entityIterator;
+				continue;
+			}
+
 			if(bullet->rectangle.getGlobalBounds().intersects(entity.Sprite.getGlobalBounds()))
 			{
 				bulletIterator = hero->bullets.erase(bulletIterator);
@@ -67,6 +98,7 @@ void GameManager::Update(float deltaTime)
 				bulletErased = true;
 				break;
 			}
+			
 			++entityIterator;
 		}
 		if(!bulletErased)
@@ -79,7 +111,6 @@ void GameManager::Update(float deltaTime)
 		
 		if(entity.isAlive > .9f)
 		{
-			// TODO
 			entityIterator = entities.erase(entityIterator);
 			delete &entity;
 		}
@@ -89,31 +120,44 @@ void GameManager::Update(float deltaTime)
 		}
 	}
 
+	float x = windowSize.x*C::GRID_SIZE;
+	float y = windowSize.y*C::GRID_SIZE;
+	
 	if(screenShakeTween.isPlaying)
 	{
 		screenShakeTween.Update(deltaTime);
-		float x = windowSize.x*C::GRID_SIZE * *screenShakeTween.variableToTween;
-		float y = windowSize.y*C::GRID_SIZE * *screenShakeTween.variableToTween;
-		view.setSize(x, y);
+		x *= *screenShakeTween.variableToTween;
+		y *= *screenShakeTween.variableToTween;
 	}
 	else if(unScreenShakeTween.isPlaying)
 	{
 		unScreenShakeTween.Update(deltaTime);
-		float x = windowSize.x*C::GRID_SIZE * *unScreenShakeTween.variableToTween;
-		float y = windowSize.y*C::GRID_SIZE * *unScreenShakeTween.variableToTween;
-		view.setSize(x, y);
+		x *= *unScreenShakeTween.variableToTween;
+		y *= *unScreenShakeTween.variableToTween;
 	}
+
+	// Laser screen shake takes over regular screen shake
+	if(screenShakeLaserTween.isPlaying)
+	{
+		screenShakeLaserTween.Update(deltaTime);
+		x *= *screenShakeLaserTween.variableToTween;
+		y *= *screenShakeLaserTween.variableToTween;
+	}
+	else if(unScreenShakeLaserTween.isPlaying)
+	{
+		unScreenShakeLaserTween.Update(deltaTime);
+		x *= *unScreenShakeLaserTween.variableToTween;
+		y *= *unScreenShakeLaserTween.variableToTween;
+	}
+	view.setSize(x, y);
 }
 
 void GameManager::Draw()
 {
 	for (std::vector<Entity*>::iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
 	{
-		Entity& entity = **iterator;
-		game.win->draw(entity.Sprite);
+		(*iterator)->Draw(game.win);
 	}
-	for (Bullet* bullet : hero->bullets)
-		game.win->draw(bullet->rectangle);
 }
 
 bool GameManager::HasCollision(int x, int y)
@@ -223,7 +267,12 @@ std::vector<Entity*>::iterator GameManager::GetEntityByPos(const int& x, const i
 	return entities.end();
 }
 
-void GameManager::ShakeScreen(int weight)
+void GameManager::ShakeScreen()
 {
 	screenShakeTween.isPlaying = true;
+}
+
+void GameManager::ShakeScreenLaser()
+{
+	screenShakeLaserTween.isPlaying = true;
 }

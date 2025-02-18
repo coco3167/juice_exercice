@@ -16,6 +16,11 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 	Sprite.setOrigin(Sprite.getTexture()->getSize().x / 2, Sprite.getTexture()->getSize().y / 2);
 	SetCoord(x*C::GRID_SIZE, y*C::GRID_SIZE);
 
+	laser = sf::RectangleShape({m_gameManager->view.getSize().x*2, LASER_WIDTH});
+	laser.setOutlineThickness(3);
+	laser.setFillColor(sf::Color(250, 0, 0, 255));
+	laser.setOutlineColor(sf::Color(150, 10, 10, 150));
+
 	// Randomize starting movement direction
 	moveLeft = std::rand()%2 == 0;
 }
@@ -136,6 +141,26 @@ void Entity::Update(float deltaTime)
 		else
 			++iterator;
 	}
+
+	// Laser Handling
+	if(isLasering)
+	{
+		laser.setPosition(XReal, YReal);
+		laser.setScale(isLookingLeft ? -1 : 1, 1);
+	}
+}
+
+void Entity::Draw(sf::RenderWindow* win)
+{
+	for (Bullet* bullet : bullets)
+	{
+		bullet->Draw(win);
+	}
+
+	if(isLasering)
+		win->draw(laser);
+	
+	win->draw(Sprite);
 }
 
 bool Entity::HasCollision(int xGrid, int yGrid)
@@ -171,16 +196,27 @@ void Entity::Shoot()
 {
 	if(m_shootTime.getElapsedTime().asSeconds() >= SHOOT_INTERVAL)
 	{
-		m_gameManager->ShakeScreen(10);
+		m_gameManager->ShakeScreen();
 		bullets.emplace_back(m_gameManager->bulletPool.Get());
-		bullets.back()->Init({XReal, YReal - 5}, isLookingLeft);
+		bullets.back()->Init({XReal, YReal}, isLookingLeft);
 
 		recoil = (isLookingLeft ? 1 : -1)*100;
 		
 		m_shootTime.restart();
 	}
-	
 }
+
+void Entity::StartLasering()
+{
+	isLasering = true;
+	m_gameManager->ShakeScreenLaser();
+}
+
+void Entity::StopLasering()
+{
+	isLasering = false;
+}
+
 
 void Entity::Hurt()
 {

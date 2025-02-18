@@ -26,6 +26,7 @@ public:
 
 	float viewZoom;
 	Tween screenShakeTween, unScreenShakeTween;
+	Tween screenShakeLaserTween, unScreenShakeLaserTween;
 	
 	GameManager(Game& game);
 	~GameManager();
@@ -41,7 +42,8 @@ public:
 	bool RemoveEntityByPos(const int& x, const int& y, bool isEnemy);
 	bool IsEntity(const int& x, const int& y, bool isEnemy);
 
-	void ShakeScreen(int weight);
+	void ShakeScreen();
+	void ShakeScreenLaser();
 
 	std::vector<Entity*>::iterator GetEntityByPos(const int& x, const int& y);
 };
