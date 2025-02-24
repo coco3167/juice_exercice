@@ -97,26 +97,26 @@ void Game::pollInput(double dt) {
 
 	float lateralSpeed = 8.0;
 	float maxSpeed = 40.0;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q) || sf::Joystick::getAxisPosition(0, sf::Joystick::PovX) < 0) {
 		gameManager->hero->MoveOnX();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || sf::Joystick::getAxisPosition(0, sf::Joystick::PovX) > 0) {
 		gameManager->hero->MoveOnX(true);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) || sf::Joystick::isButtonPressed(0, 0)) {
 		gameManager->hero->Jump();
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter) || sf::Joystick::isButtonPressed(0, 2)) {
 		gameManager->hero->Shoot();
 	}
 
 	// Laser Input
-	if(!gameManager->hero->isLasering && Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+	if(!gameManager->hero->isLasering && Keyboard::isKeyPressed(sf::Keyboard::Key::P)  || sf::Joystick::isButtonPressed(0, 3))
 		gameManager->hero->StartLasering();
-	else if(gameManager->hero->isLasering && !Keyboard::isKeyPressed(sf::Keyboard::Key::P))
+	else if(gameManager->hero->isLasering && !(Keyboard::isKeyPressed(sf::Keyboard::Key::P) && sf::Joystick::isButtonPressed(0, 3)))
 		gameManager->hero->StopLasering();
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
