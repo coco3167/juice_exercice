@@ -11,8 +11,8 @@ private:
 	GameManager* m_gameManager;
 
 	// Shoot parameters
-	static constexpr float SHOOT_INTERVAL = .1f;
-	sf::Clock m_shootTime;
+	static constexpr float SHOOT_INTERVAL = .1f, LASER_INTERVAL = 1.f, LASER_DURATION = 1.5f;
+	sf::Clock m_shootTime, m_laserTime;
 
 	static constexpr float LASER_WIDTH = 2.f;
 

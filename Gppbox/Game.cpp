@@ -116,8 +116,8 @@ void Game::pollInput(double dt) {
 	// Laser Input
 	if(!gameManager->hero->isLasering && Keyboard::isKeyPressed(sf::Keyboard::Key::P)  || sf::Joystick::isButtonPressed(0, 3))
 		gameManager->hero->StartLasering();
-	else if(gameManager->hero->isLasering && !(Keyboard::isKeyPressed(sf::Keyboard::Key::P) && sf::Joystick::isButtonPressed(0, 3)))
-		gameManager->hero->StopLasering();
+	/*else if(gameManager->hero->isLasering && !(Keyboard::isKeyPressed(sf::Keyboard::Key::P) && sf::Joystick::isButtonPressed(0, 3)))
+		gameManager->hero->StopLasering();*/
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
 		if (!wasPressed) {

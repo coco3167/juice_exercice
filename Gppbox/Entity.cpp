@@ -20,6 +20,7 @@ Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameMa
 	laser.setOutlineThickness(3);
 	laser.setFillColor(sf::Color(250, 0, 0, 255));
 	laser.setOutlineColor(sf::Color(150, 10, 10, 150));
+	m_laserTime = sf::Clock();
 
 	// Randomize starting movement direction
 	moveLeft = std::rand()%2 == 0;
@@ -147,6 +148,7 @@ void Entity::Update(float deltaTime)
 	{
 		laser.setPosition(XReal, YReal);
 		laser.setScale(isLookingLeft ? -1 : 1, 1);
+		StopLasering();
 	}
 }
 
@@ -208,12 +210,18 @@ void Entity::Shoot()
 
 void Entity::StartLasering()
 {
-	isLasering = true;
-	m_gameManager->ShakeScreenLaser();
+	if (m_laserTime.getElapsedTime().asSeconds() >= LASER_DURATION + LASER_INTERVAL)
+	{
+		m_laserTime.restart();
+		isLasering = true;
+		m_gameManager->ShakeScreenLaser();
+	}
 }
 
 void Entity::StopLasering()
 {
+	if (m_laserTime.getElapsedTime().asSeconds() < LASER_DURATION)
+		return;
 	isLasering = false;
 }
 
