@@ -8,7 +8,7 @@
 int Entity::XSpeed = 10, Entity::XAirSpeed = 2, Entity::MaxSpeed = 50, Entity::JumpForce = 150;
 float Entity::GroundFriction = 0.1f, Entity::AirFriction = 0.5f;
 
-Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : m_gameManager(&gameManager), isEnemy(isEnemy), deathTween(&isAlive, 1.f, .05f)
+Entity::Entity(int x, int y, const std::string &texturePath, GameManager& gameManager, bool isEnemy) : m_gameManager(&gameManager), isEnemy(isEnemy), deathTween(&isAlive, 1.f, .1f)
 {
 	texture.loadFromFile(texturePath);
 	Sprite.setTexture(texture);
@@ -229,7 +229,7 @@ void Entity::StopLasering()
 void Entity::Hurt()
 {
 	Sprite.setColor(sf::Color::Red);
-	deathTween.isPlaying = true;
+	deathTween.Start();
 }
 
 

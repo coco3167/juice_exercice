@@ -24,7 +24,7 @@ public:
 	std::vector<Entity*> entities;
 	Pool<Bullet> bulletPool;
 
-	float viewZoom;
+	float viewZoom, viewZoomLaser;
 	Tween screenShakeTween, unScreenShakeTween;
 	Tween screenShakeLaserTween, unScreenShakeLaserTween;
 	

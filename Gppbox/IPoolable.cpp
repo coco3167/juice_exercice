@@ -5,5 +5,5 @@
 
 void IPoolable::Reset()
 {
-    std::cout << "reset" << std::endl;
+    // std::cout << "reset" << std::endl;
 }

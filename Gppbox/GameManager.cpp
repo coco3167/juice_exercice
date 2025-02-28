@@ -8,10 +8,10 @@
 
 GameManager::GameManager(Game& game): 
 	game(game),
-	screenShakeTween(&viewZoom, .95f, .5f, &unScreenShakeTween),
+	screenShakeTween(&viewZoom, .95f, .05f, &unScreenShakeTween),
 	unScreenShakeTween(&viewZoom, 1, .2f),
-	screenShakeLaserTween(&viewZoom, .9f, 1.f, &unScreenShakeLaserTween),
-	unScreenShakeLaserTween(&viewZoom, 1, 1.f),
+	screenShakeLaserTween(&viewZoomLaser, .9f, .1f, &unScreenShakeLaserTween),
+	unScreenShakeLaserTween(&viewZoomLaser, 1, 1.f),
 	bulletPool(Pool<Bullet>(20))
 {
 	AddEntity(6, 6, "res/Perso.png", false);
@@ -40,6 +40,7 @@ GameManager::GameManager(Game& game):
 	view.reset(FloatRect(0,0, windowSize.x, windowSize.y));
 	view.setCenter(windowSize.x/2, windowSize.y/2);
 	viewZoom = 1;
+	viewZoomLaser = 1;
 	
 	windowSize.x /= C::GRID_SIZE;
 	windowSize.y /= C::GRID_SIZE;
@@ -123,32 +124,13 @@ void GameManager::Update(float deltaTime)
 	float x = windowSize.x*C::GRID_SIZE;
 	float y = windowSize.y*C::GRID_SIZE;
 	
-	if(screenShakeTween.isPlaying)
-	{
-		screenShakeTween.Update(deltaTime);
-		x *= *screenShakeTween.variableToTween;
-		y *= *screenShakeTween.variableToTween;
-	}
-	else if(unScreenShakeTween.isPlaying)
-	{
-		unScreenShakeTween.Update(deltaTime);
-		x *= *unScreenShakeTween.variableToTween;
-		y *= *unScreenShakeTween.variableToTween;
-	}
-
-	// Laser screen shake takes over regular screen shake
-	if(screenShakeLaserTween.isPlaying)
-	{
-		screenShakeLaserTween.Update(deltaTime);
-		x *= *screenShakeLaserTween.variableToTween;
-		y *= *screenShakeLaserTween.variableToTween;
-	}
-	else if(unScreenShakeLaserTween.isPlaying)
-	{
-		unScreenShakeLaserTween.Update(deltaTime);
-		x *= *unScreenShakeLaserTween.variableToTween;
-		y *= *unScreenShakeLaserTween.variableToTween;
-	}
+	screenShakeTween.Update(deltaTime);
+	unScreenShakeTween.Update(deltaTime);
+	screenShakeLaserTween.Update(deltaTime);
+	unScreenShakeLaserTween.Update(deltaTime);
+	
+	x *= viewZoom*viewZoomLaser;
+	y *= viewZoom*viewZoomLaser;
 	view.setSize(x, y);
 }
 
@@ -269,10 +251,10 @@ std::vector<Entity*>::iterator GameManager::GetEntityByPos(const int& x, const i
 
 void GameManager::ShakeScreen()
 {
-	screenShakeTween.isPlaying = true;
+	screenShakeTween.Start();
 }
 
 void GameManager::ShakeScreenLaser()
 {
-	screenShakeLaserTween.isPlaying = true;
+	screenShakeLaserTween.Start();
 }
