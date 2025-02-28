@@ -12,3 +12,11 @@ It embeds:
 LICENCE
 
 MIT whatevers
+
+
+---------------------------------
+
+To play the game use ZQSD for movement, SPACE to Jump, Enter to shoot and P to Laser
+You can edit, save and load the level by using Imgui, Left Click to Add and Right Click to Remove
+You can add enemies the same way
+Enjoy !
